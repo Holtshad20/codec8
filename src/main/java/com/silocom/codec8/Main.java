@@ -1,7 +1,7 @@
 /*
  * @Author Fernando Gonzalez.
  */
-package com.silocom.codec8extended;
+package com.silocom.codec8;
 
 import com.silocom.m2m.layer.physical.PhysicalLayer;
 
@@ -16,6 +16,6 @@ public class Main {
        String IpSrc = "192.168.2.40"; 
        com.silocom.m2m.layer.physical.Connection con = PhysicalLayer.addConnection(1, 17500, IpSrc);  //colocar tipo de conexion e IP valido
        
-       System.out.println(" CRC16: 0x0000" + CRC16.calcCRC16(payload));
+       System.out.println(" CRC16: 0x0000" + CRC16.calcCRC16(payload)); // 
     }
 }

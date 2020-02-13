@@ -1,7 +1,7 @@
 /*
  * @Author Fernando Gonzalez.
  */
-package com.silocom.codec8extended;
+package com.silocom.codec8;
 
 /**
  *
