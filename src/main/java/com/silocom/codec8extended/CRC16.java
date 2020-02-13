@@ -54,7 +54,7 @@ public class CRC16 {
         
         crc16 = crc16 & 0xFFFF;
 
-        return Integer.toHexString(crc16);
+        return Integer.toHexString(crc16); //
        
 
     }
