@@ -5,7 +5,6 @@ package com.silocom.codec8;
 
 import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
@@ -28,7 +27,7 @@ public class Receiver {
 
         //Si el IMEI recibido es el IMEI esperado, parsear y despues de parsear responder 01, en caso contrario, no hacer nada y responder 00
         //System.out.println(" IMEIExpected: " + Utils.hexToString(IMEIExpected));
-        if (rawData.length == 17) {
+        if (rawData.length == IMEIExpected.length + 2) {
             byte[] IMEIReceived = new byte[15];
 
             for (int i = 0, j = 2; (i < IMEIReceived.length); i++, j++) {
@@ -86,21 +85,37 @@ public class Receiver {
             for (int i = 0, j = 27; i < altitude.length; i++) {
                 altitude[i] = rawData[j];
             }
-         
 
             byte[] angle = new byte[2];
             for (int i = 0, j = 29; i < angle.length; i++) {
                 angle[i] = rawData[j];
             }
-            
+
             byte[] satellites = new byte[1];
             satellites[0] = rawData[31];
-            
+
             byte[] speed = new byte[2];
             for (int i = 0, j = 32; i < speed.length; i++) {
                 speed[i] = rawData[j];
             }
-            
+
+            byte[] eventIO_ID = new byte[1];
+            eventIO_ID[0] = rawData[34];
+            int eventIO = Utils.byteArrayToInt(eventIO_ID);
+
+            if (eventIO != 0) {  //Si hay un evento de I/O que disparo un evento
+
+                byte[] nTotalID = new byte[1];
+                nTotalID[0] = rawData[35];   //Dice cuantos records hay, importante para ajustar a la cantidad de records recibidos
+
+     
+                
+                //TODO: que pasa si son mas de 5 records o menos? Ajustar para la cantidad de records
+
+            } else {
+                eventIO = 0;   //No se ha disparado nigun evento
+            }
+
             System.out.println(" rawData: " + Utils.hexToString(rawData));
             System.out.println(" header: " + Utils.hexToString(header));
             System.out.println(" dataFieldLenght: " + Utils.hexToString(dataFieldLenght));
