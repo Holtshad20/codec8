@@ -5,6 +5,7 @@ package com.silocom.codec8;
 
 import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
@@ -26,61 +27,93 @@ public class Receiver {
     public void parser() {
 
         //Si el IMEI recibido es el IMEI esperado, parsear y despues de parsear responder 01, en caso contrario, no hacer nada y responder 00
-        System.out.println(" IMEIExpected: " + Utils.hexToString(IMEIExpected));
-
+        //System.out.println(" IMEIExpected: " + Utils.hexToString(IMEIExpected));
         if (rawData.length == 17) {
-            byte[] IMEIlenght = new byte[2];
-            IMEIlenght[0] = rawData[0];
-            IMEIlenght[1] = rawData[1];
-
             byte[] IMEIReceived = new byte[15];
 
-            IMEIReceived[0] = rawData[2];
-            IMEIReceived[1] = rawData[3];
-            IMEIReceived[2] = rawData[4];
-            IMEIReceived[3] = rawData[5];
-            IMEIReceived[4] = rawData[6];
-            IMEIReceived[5] = rawData[7];
-            IMEIReceived[6] = rawData[8];
-            IMEIReceived[7] = rawData[9];
-            IMEIReceived[8] = rawData[10];
-            IMEIReceived[9] = rawData[11];
-            IMEIReceived[10] = rawData[12];
-            IMEIReceived[11] = rawData[13];
-            IMEIReceived[12] = rawData[14];
-            IMEIReceived[13] = rawData[15];
-            IMEIReceived[14] = rawData[16];
-            System.out.println(" IMEIReceived: " + Utils.hexToString(IMEIReceived));
+            for (int i = 0, j = 2; (i < IMEIReceived.length); i++, j++) {
+                IMEIReceived[i] = rawData[j];
+            }
+
+            byte[] IMEIlenght = new byte[2];
+            System.arraycopy(rawData, 0, IMEIlenght, 0, 2);
+
             if (Arrays.equals(IMEIReceived, IMEIExpected)) {
 
                 //Send 0x01 to the device
             } else {
 
-                //Send 0x00 to the device
+                //Do nothing
             }
 
         } else {
 
-            System.out.println(" DATA ");
             byte[] header = new byte[4];
             System.arraycopy(rawData, 0, header, 0, 3);
 
             byte[] dataFieldLenght = new byte[4];
-            dataFieldLenght[0] = rawData[4];
-            dataFieldLenght[1] = rawData[5];
-            dataFieldLenght[2] = rawData[6];
-            dataFieldLenght[3] = rawData[7];
+            for (int i = 0, j = 4; (i < dataFieldLenght.length); i++, j++) {
+                dataFieldLenght[i] = rawData[j];
+            }
 
             byte[] codecID = new byte[1];
             codecID[0] = rawData[8];
 
             byte[] NofData1 = new byte[1];
             NofData1[0] = rawData[9];
+
+            byte[] timestamp = new byte[8];
+            for (int i = 0, j = 10; (i < timestamp.length); i++, j++) {
+                timestamp[i] = rawData[j];
+            }
+
+            byte[] priority = new byte[1];
+            priority[0] = rawData[18];
+
+            byte[] lon = new byte[4];
+            for (int i = 0, j = 19; (i < lon.length); i++, j++) {
+                lon[i] = rawData[j];
+            }
+            int longitude = GPScalculator.longitude(lon);
+
+            byte[] lat = new byte[4];
+            for (int i = 0, j = 23; (i < lat.length); i++, j++) {
+                lat[i] = rawData[j];
+            }
+            int latitude = GPScalculator.latitude(lat);
+
+            byte[] altitude = new byte[2];
+            for (int i = 0, j = 27; i < altitude.length; i++) {
+                altitude[i] = rawData[j];
+            }
+         
+
+            byte[] angle = new byte[2];
+            for (int i = 0, j = 29; i < angle.length; i++) {
+                angle[i] = rawData[j];
+            }
+            
+            byte[] satellites = new byte[1];
+            satellites[0] = rawData[31];
+            
+            byte[] speed = new byte[2];
+            for (int i = 0, j = 32; i < speed.length; i++) {
+                speed[i] = rawData[j];
+            }
+            
             System.out.println(" rawData: " + Utils.hexToString(rawData));
             System.out.println(" header: " + Utils.hexToString(header));
             System.out.println(" dataFieldLenght: " + Utils.hexToString(dataFieldLenght));
             System.out.println(" codecID: " + Utils.hexToString(codecID));
             System.out.println(" NofData1: " + Utils.hexToString(NofData1));
+            System.out.println(" timestamp: " + Utils.hexToString(timestamp));
+            System.out.println(" priority: " + Utils.hexToString(priority));
+            System.out.println(" longitude: " + longitude);
+            System.out.println(" latitude: " + latitude);
+            System.out.println(" altitude: " + Utils.hexToString(altitude));
+            System.out.println(" angle: " + Utils.hexToString(angle));
+            System.out.println(" satellites: " + Utils.hexToString(satellites));
+            System.out.println(" speed: " + Utils.hexToString(speed));
         }
 
     }

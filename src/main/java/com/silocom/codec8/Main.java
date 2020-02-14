@@ -23,7 +23,7 @@ byte[] IMEIExpected = new byte[]{0x33, 0x35, 0x36, 0x33, 0x30, 0x37, 0x30, 0x34,
         byte[] rawDataHex = CRC16.hexStringToByteArray(rawData);
         
 
-        com.silocom.m2m.layer.physical.Connection con = PhysicalLayer.addConnection(1, 17500, IpSrc);  //colocar tipo de conexion e IP valido
+        //com.silocom.m2m.layer.physical.Connection con = PhysicalLayer.addConnection(1, 17500, IpSrc);  //colocar tipo de conexion e IP valido
         Receiver rec = new Receiver(rawDataHex, IMEIExpected);
 
         rec.parser();
