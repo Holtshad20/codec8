@@ -5,6 +5,7 @@ package com.silocom.codec8;
 
 import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -28,27 +29,31 @@ public class Receiver implements MessageListener {
 
         //Si el IMEI recibido es el IMEI esperado, parsear y despues de parsear responder 01, en caso contrario, no hacer nada y responder 00
         System.out.println(" rawdata: " + Utils.hexToString(message));
-        if (message.length == IMEIExpected.length + 2) {
+        if (message.length == 17) {
 
             byte[] IMEIReceived = new byte[15];
-            System.out.println(" mensaje con IMEI ");
-            for (int i = 0, j = 3; (i < IMEIReceived.length + 2); i++, j++) {
-                IMEIReceived[i] = message[j];
+            try {
+                for (int i = 0, j = 2; i < message.length - 1; i++, j++) {
+                    IMEIReceived[i] = message[j];
+                }
+            } catch (Exception e) {
+
             }
 
-            System.out.println(" IMEIReceived: " + Utils.hexToString(IMEIReceived));
-
+            //System.out.println(" IMEIReceived: " + Utils.hexToString(IMEIReceived));
+            // System.out.println(" IMEIExpected: " + Utils.hexToString(IMEIExpected));
             byte[] IMEIlenght = new byte[2];
             System.arraycopy(message, 0, IMEIlenght, 0, 2);
 
             if (Arrays.equals(IMEIReceived, IMEIExpected)) {
 
                 //Send 0x01 to the device
-                System.out.print(" IMEI expected: " + Utils.hexToString(IMEIReceived));
-
+                byte[] accept = new byte[]{0x01};
+                con.sendMessage(accept);
             } else {
-                System.out.print(" IMEI not expected: " + Utils.hexToString(IMEIReceived));
-                //Do nothing
+                byte[] deny = new byte[]{0x00};
+                con.sendMessage(deny);
+
             }
 
         } else {
@@ -57,7 +62,7 @@ public class Receiver implements MessageListener {
             System.arraycopy(message, 0, header, 0, 3);
 
             byte[] dataFieldLenght = new byte[4];
-            for (int i = 0, j = 4; (i < dataFieldLenght.length); i++, j++) {
+            for (int i = 0, j = 4; (i < dataFieldLenght.length - 1); i++, j++) {
                 dataFieldLenght[i] = message[j];
             }
 
@@ -70,7 +75,9 @@ public class Receiver implements MessageListener {
             byte[] timestamp = new byte[8];
             for (int i = 0, j = 10; (i < timestamp.length); i++, j++) {
                 timestamp[i] = message[j];
-            }
+            }  
+           // int pomAsInt = ByteBuffer.wrap(timestamp).getInt();
+
 
             byte[] priority = new byte[1];
             priority[0] = message[18];
@@ -159,12 +166,12 @@ public class Receiver implements MessageListener {
                 eventIO_ID[0] = 0;   //No se ha disparado nigun evento
             }
 
-            System.out.println(" rawData: " + Utils.hexToString(message));
             System.out.println(" header: " + Utils.hexToString(header));
             System.out.println(" dataFieldLenght: " + Utils.hexToString(dataFieldLenght));
             System.out.println(" codecID: " + Utils.hexToString(codecID));
+            System.out.println(" timestamp: " + timestamp);
             //System.out.println(" NofData1: " + Utils.hexToString(NofData1));
-            System.out.println(" timestamp: " + Utils.hexToString(timestamp));
+          
             // System.out.println(" priority: " + Utils.hexToString(priority));
             //  System.out.println(" longitude: " + longitude);
             //  System.out.println(" latitude: " + latitude);
