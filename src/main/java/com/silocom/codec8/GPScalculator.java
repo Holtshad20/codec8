@@ -3,25 +3,24 @@
  */
 package com.silocom.codec8;
 
+import java.util.Arrays;
+import java.util.Base64;
+
 /**
  *
  * @author silocom01
  */
 public class GPScalculator {
 
-    public static int longitude(byte[] lon) {
-       //realizar cálculo
-        return 0;
-        
-    }
-
-    public static int latitude(byte[] lat) {
+    public static double longitude(byte[] lon) {
        
-        //realizar cálculo
-        return 0;
+       return (int)Long.parseLong(Utils.bytesToHex(lon), 16) / 1e7;
+    
     }
 
+    public static double latitude(byte[] lat) {
+
+      return (int)Long.parseLong(Utils.bytesToHex(lat), 16) / 1e7;
+    }
 
 }
-    
-
