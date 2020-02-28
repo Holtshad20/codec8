@@ -4,7 +4,7 @@
 package com.silocom.codec8;
 
 import com.silocom.m2m.layer.physical.PhysicalLayer;
-import java.util.Arrays;
+
 
 /**
  *

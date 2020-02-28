@@ -5,7 +5,6 @@ package com.silocom.codec8;
 
 import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Date;
 import org.apache.commons.lang3.ArrayUtils;
@@ -76,8 +75,9 @@ public class Receiver implements MessageListener {
                 CRC16_parsed[i] = messageReversed[j];
             }
 
-            //CRC16.calcCRC16(header);  
+
             //Si el CRC16 no concuerda, no procesa la data
+
             byte[] codecID = new byte[1];
             codecID[0] = message[8];
 
@@ -86,69 +86,35 @@ public class Receiver implements MessageListener {
 
             byte[] NofData2 = new byte[1];
             NofData2[0] = messageReversed[4];
-
-            byte[] timestamp = new byte[8];
-            for (int i = 0, j = 10; (i < timestamp.length); i++, j++) {
-                timestamp[i] = message[j];
-            }
-            Date date = TimeStampCalculator.timeCalc(timestamp);
-
-            byte[] priority = new byte[1];
-            priority[0] = message[18];
-
-            byte[] lon = new byte[4];
-            for (int i = 0, j = 19; (i < lon.length); i++, j++) {
-                lon[i] = message[j];
-            }
-
-            double longitude = GPScalculator.longitude(lon);
-            byte[] lat = new byte[4];
-            for (int i = 0, j = 23; (i < lat.length); i++, j++) {
-                lat[i] = message[j];
-            }
-            double latitude = GPScalculator.latitude(lat);
-
-            byte[] altitude = new byte[2];
-            for (int i = 0, j = 27; i < altitude.length; i++) {
-                altitude[i] = message[j];
-            }
-
-            byte[] angle = new byte[2];
-            for (int i = 0, j = 29; i < angle.length; i++) {
-                angle[i] = message[j];
-            }
-
-            byte[] satellites = new byte[1];
-            satellites[0] = message[31];
-
-            byte[] speed = new byte[2];
-            for (int i = 0, j = 32; i < speed.length; i++) {
-                speed[i] = message[j];
-            }
-
             
-
+            byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
+            
+            Parser.Parser(AVLData);
+             //Los records empiezan desde el timestamp hasta el proximo timestamp
+                    
             
             con.sendMessage(NofData1);
 
-            System.out.println(" codecID: " + Utils.hexToString(codecID));
-            System.out.println(" NofData1: " + Utils.hexToString(NofData1));
-            System.out.println(" NofData2: " + Utils.hexToString(NofData2));
-            System.out.println(" timestamp: " + date);
+            
+            //System.out.println(" codecID: " + Utils.hexToString(codecID));
+            System.out.println(" NofData1: " +Integer.parseInt(Utils.hexToString(NofData1),16));
+            System.out.println(" NofData2: " + Integer.parseInt(Utils.hexToString(NofData2),16));
+           // System.out.println(" timestamp: " + date);
+            //System.out.println(" priority: " + Utils.hexToString(priority));
+           // System.out.println(" latitude/longitude: " + latitude + "," + longitude);
+            //System.out.println(" satellites: " + Utils.hexToString(satellites));
+            //System.out.println(" speed: " + Utils.hexToString(speed));
+            //System.out.println(" CRC16: " + Utils.hexToString(CRC16_parsed));
+           // System.out.println(" nOfTotalIO: " + Utils.hexToString(nOfTotalIO));
+            //System.out.println(" ioElements: " + Utils.hexToString(AVLData));
 
+            
 
-            System.out.println(" priority: " + Utils.hexToString(priority));
-            System.out.println(" latitude: " + latitude);
-            System.out.println(" longitude: " + longitude);
-
-            System.out.println(" altitude: " + Utils.hexToString(altitude));
-            System.out.println(" angle: " + Utils.hexToString(angle));
-            System.out.println(" satellites: " + Utils.hexToString(satellites));
-            System.out.println(" speed: " + Utils.hexToString(speed));
-            System.out.println(" CRC16: " + Utils.hexToString(CRC16_parsed));
         }
 
     }
+    
+    
 
     @Override
     public void receiveMessage(byte[] message, Connection con) {
