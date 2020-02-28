@@ -3,13 +3,15 @@
  */
 package com.silocom.codec8;
 
+import java.util.Arrays;
+
 /**
  *
  * @author silocom01
  */
 public class CRC16 {
 
-    public static String calcCRC16(byte[] payload) {   //
+    public static byte[] calcCRC16(byte[] payload) {   //
 
         int[] table = {
             0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
@@ -44,17 +46,18 @@ public class CRC16 {
             0x4E00, 0x8EC1, 0x8F81, 0x4F40, 0x8D01, 0x4DC0, 0x4C80, 0x8C41,
             0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641,
             0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040,};
-        String rawData = payload.toString();
-        byte[] bytes = hexStringToByteArray(rawData); // for HEX
+       
+        //String rawData = Arrays.toString(payload);
+       // byte[] bytes = hexStringToByteArray(Arrays.toString(payload)); // for HEX
         int crc16 = 0x0000;
-        for (byte b : bytes) {
+        for (byte b : payload) {
 
             crc16 = table[(crc16 ^ b) & 0xff] ^ (crc16 >> 8);
         }
         
-        crc16 = crc16 & 0xFFFF;
+        crc16 = crc16 & 0xFFFFFF;
 
-        return Integer.toHexString(crc16); //
+        return hexStringToByteArray(Integer.toHexString(crc16)); //Integer.toHexString(crc16)
        
 
     }
