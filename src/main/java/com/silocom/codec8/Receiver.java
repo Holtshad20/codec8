@@ -75,46 +75,41 @@ public class Receiver implements MessageListener {
                 CRC16_parsed[i] = messageReversed[j];
             }
 
-
             //Si el CRC16 no concuerda, no procesa la data
-
             byte[] codecID = new byte[1];
             codecID[0] = message[8];
 
-            byte[] NofData1 = new byte[1];
-            NofData1[0] = message[9];
-
+            byte[] NofData1 = new byte[4];
+            NofData1[0] = 0x00;
+            NofData1[1] = 0x00;
+            NofData1[2] = 0x00;
+            NofData1[3] = message[9];
+          
             byte[] NofData2 = new byte[1];
             NofData2[0] = messageReversed[4];
-            
-            byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
-            
-            Parser.Parser(AVLData);
-             //Los records empiezan desde el timestamp hasta el proximo timestamp
-                    
-            
-            con.sendMessage(NofData1);
 
-            
+            byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
+
+            Parser.Parser(AVLData);
+            //Los records empiezan desde el timestamp hasta el proximo timestamp
+
+            con.sendMessage(NofData1);   //enviar como entero?
+
             //System.out.println(" codecID: " + Utils.hexToString(codecID));
-            System.out.println(" NofData1: " +Integer.parseInt(Utils.hexToString(NofData1),16));
-            System.out.println(" NofData2: " + Integer.parseInt(Utils.hexToString(NofData2),16));
-           // System.out.println(" timestamp: " + date);
+            System.out.println(" NofData1: " + Integer.parseInt(Utils.hexToString(NofData1), 16));
+            System.out.println(" NofData2: " + Integer.parseInt(Utils.hexToString(NofData2), 16));
+            // System.out.println(" timestamp: " + date);
             //System.out.println(" priority: " + Utils.hexToString(priority));
-           // System.out.println(" latitude/longitude: " + latitude + "," + longitude);
+            // System.out.println(" latitude/longitude: " + latitude + "," + longitude);
             //System.out.println(" satellites: " + Utils.hexToString(satellites));
             //System.out.println(" speed: " + Utils.hexToString(speed));
             //System.out.println(" CRC16: " + Utils.hexToString(CRC16_parsed));
-           // System.out.println(" nOfTotalIO: " + Utils.hexToString(nOfTotalIO));
+            // System.out.println(" nOfTotalIO: " + Utils.hexToString(nOfTotalIO));
             //System.out.println(" ioElements: " + Utils.hexToString(AVLData));
-
-            
 
         }
 
     }
-    
-    
 
     @Override
     public void receiveMessage(byte[] message, Connection con) {

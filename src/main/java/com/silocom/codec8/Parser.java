@@ -28,7 +28,7 @@ public class Parser {
         }
 
         double longitude = GPScalculator.longitude(lon);
-        
+
         byte[] lat = new byte[4];
         for (int i = 0, j = 13; (i < lat.length); i++, j++) {
             lat[i] = message[j];
@@ -54,15 +54,15 @@ public class Parser {
         }
 
         byte[] nOfTotalIO = new byte[1];
-        nOfTotalIO[0] = message[24];
+        nOfTotalIO[0] = message[25];
 
         System.out.println(" timestamp: " + date);
         System.out.println(" priority: " + Utils.hexToString(priority));
         System.out.println(" latitude/longitude: " + latitude + "," + longitude);
         System.out.println(" satellites: " + Utils.hexToString(satellites));
         System.out.println(" speed: " + Utils.hexToString(speed));
-        System.out.println(" nOfTotalIO: " + Utils.hexToString(nOfTotalIO));
-
+        System.out.println(" nOfTotalIO: " + Integer.parseInt(Utils.hexToString(nOfTotalIO),16));
+        //System.out.println(" message parsed: " + Utils.hexToString(message));
     }
 
 }
