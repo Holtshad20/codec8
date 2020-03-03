@@ -18,6 +18,7 @@ public class Main {
 
         com.silocom.m2m.layer.physical.Connection con = PhysicalLayer.addConnection(3, 17500, "192.168.3.4");  //colocar tipo de conexion e IP valido
         Receiver rec = new Receiver(con , IMEIExpected);
+        //Sender send = new Sender(con);
 
         con.addListener(rec);
 

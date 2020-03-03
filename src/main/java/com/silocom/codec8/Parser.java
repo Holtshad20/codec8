@@ -56,6 +56,9 @@ public class Parser {
         byte[] nOfTotalIO = new byte[1];
         nOfTotalIO[0] = message[25];
 
+        
+        
+        
         System.out.println(" timestamp: " + date);
         System.out.println(" priority: " + Utils.hexToString(priority));
         System.out.println(" latitude/longitude: " + latitude + "," + longitude);

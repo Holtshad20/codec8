@@ -6,7 +6,6 @@ package com.silocom.codec8;
 import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
 import java.util.Arrays;
-import java.util.Date;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -28,7 +27,7 @@ public class Receiver implements MessageListener {
 
         //Si el IMEI recibido es el IMEI esperado, parsear y despues de parsear responder 01, en caso contrario, no hacer nada y responder 00
         System.out.println(" message: " + Utils.hexToString(message));
-
+       
         byte[] messageReversed = new byte[message.length];
         messageReversed = message.clone();
         ArrayUtils.reverse(messageReversed);
@@ -61,62 +60,55 @@ public class Receiver implements MessageListener {
 
         } else {
 
-            byte[] header = new byte[4];
+           
+                byte[] header = new byte[4];
 
-            System.arraycopy(message, 0, header, 0, 3);
+                System.arraycopy(message, 0, header, 0, 3);
 
-            byte[] dataFieldLenght = new byte[4];
-            for (int i = 0, j = 4; (i < dataFieldLenght.length); i++, j++) {
-                dataFieldLenght[i] = message[j];
-            }
+                byte[] dataFieldLenght = new byte[4];
+                for (int i = 0, j = 4; (i < dataFieldLenght.length); i++, j++) {
+                    dataFieldLenght[i] = message[j];
+                }
 
-            byte[] CRC16_parsed = new byte[4];
-            for (int i = 0, j = 3; i < CRC16_parsed.length; i++, j--) {
-                CRC16_parsed[i] = messageReversed[j];
-            }
+                byte[] CRC16_parsed = new byte[4];
+                for (int i = 0, j = 3; i < CRC16_parsed.length; i++, j--) {
+                    CRC16_parsed[i] = messageReversed[j];
+                }
 
-            byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
+                byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
 
 //Si el CRC16 no concuerda, no procesa la data
-            byte[] CRC16_Calculated = new byte[4];
-            CRC16_Calculated[0] = 0x00;
-            CRC16_Calculated[1] = 0x00;
-            CRC16_Calculated[2] = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4))[0];
-            CRC16_Calculated[3] = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4))[1];
+                byte[] CRC16_Calculated = new byte[4];
+                CRC16_Calculated[0] = 0x00;
+                CRC16_Calculated[1] = 0x00;
+                CRC16_Calculated[2] = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4))[0];
+                CRC16_Calculated[3] = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4))[1];
 
-            byte[] codecID = new byte[1];
-            codecID[0] = message[8];
+                byte[] codecID = new byte[1];
+                codecID[0] = message[8];
 
-            if (Arrays.equals(CRC16_parsed, CRC16_Calculated)) {
+                if (Arrays.equals(CRC16_parsed, CRC16_Calculated)) {
 
-                byte[] NofData1 = new byte[4];
-                NofData1[0] = 0x00;
-                NofData1[1] = 0x00;
-                NofData1[2] = 0x00;
-                NofData1[3] = message[9];
+                    byte[] NofData1 = new byte[4];
+                    NofData1[0] = 0x00;
+                    NofData1[1] = 0x00;
+                    NofData1[2] = 0x00;
+                    NofData1[3] = message[9];
 
-                byte[] NofData2 = new byte[1];
-                NofData2[0] = messageReversed[4];
+                    byte[] NofData2 = new byte[1];
+                    NofData2[0] = messageReversed[4];
 
-                Parser.Parser(AVLData); //Los records empiezan desde el timestamp hasta el proximo timestamp
+                    Parser.Parser(AVLData); //Los records empiezan desde el timestamp hasta el proximo timestamp
 
-                con.sendMessage(NofData1);
+                    con.sendMessage(NofData1);
 
+                    System.out.println(" NofData1: " + Integer.parseInt(Utils.hexToString(NofData1), 16));
+                    
 
-                System.out.println(" NofData1: " + Integer.parseInt(Utils.hexToString(NofData1), 16));
-                System.out.println(" NofData2: " + Integer.parseInt(Utils.hexToString(NofData2), 16));
-                // System.out.println(" timestamp: " + date);
-                //System.out.println(" priority: " + Utils.hexToString(priority));
-                // System.out.println(" latitude/longitude: " + latitude + "," + longitude);
-                //System.out.println(" satellites: " + Utils.hexToString(satellites));
-                //System.out.println(" speed: " + Utils.hexToString(speed));
-                System.out.println(" CRC16 parsed: " + Utils.hexToString(CRC16_parsed));
-                System.out.println(" CRC16 calculated: " + Utils.hexToString(CRC16_Calculated));
-
- 
-            } else {
-                //No procesar
-            }
+                } else {
+                    //No procesar
+                }
+            
         }
 
     }
