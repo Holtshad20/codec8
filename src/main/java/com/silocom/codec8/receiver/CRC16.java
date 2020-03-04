@@ -1,7 +1,7 @@
 /*
  * @Author Fernando Gonzalez.
  */
-package com.silocom.codec8;
+package com.silocom.codec8.receiver;
 
 import java.util.Arrays;
 

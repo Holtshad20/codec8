@@ -1,7 +1,7 @@
 /*
  * @Author Fernando Gonzalez.
  */
-package com.silocom.codec8;
+package com.silocom.codec8.receiver;
 
 import java.util.Date;
 
@@ -40,13 +40,9 @@ public class Parser {
             altitude[i] = message[j];
         }
 
-        byte[] angle = new byte[2];
-        for (int i = 0, j = 19; i < angle.length; i++) {
-            angle[i] = message[j];
-        }
 
-        byte[] satellites = new byte[1];
-        satellites[0] = message[21];
+        byte[] satInUse = new byte[1];
+        satInUse[0] = message[21];
 
         byte[] speed = new byte[2];
         for (int i = 0, j = 22; i < speed.length; i++) {
@@ -55,17 +51,15 @@ public class Parser {
 
         byte[] nOfTotalIO = new byte[1];
         nOfTotalIO[0] = message[25];
-
-        
-        
+  
         
         System.out.println(" timestamp: " + date);
         System.out.println(" priority: " + Utils.hexToString(priority));
         System.out.println(" latitude/longitude: " + latitude + "," + longitude);
-        System.out.println(" satellites: " + Utils.hexToString(satellites));
+        System.out.println(" satellites in use: " + Utils.hexToString(satInUse));
         System.out.println(" speed: " + Utils.hexToString(speed));
         System.out.println(" nOfTotalIO: " + Integer.parseInt(Utils.hexToString(nOfTotalIO),16));
-        //System.out.println(" message parsed: " + Utils.hexToString(message));
+
     }
 
 }
