@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class Sender{
 
     Connection con;
-    private final String getinfo;
+    private final String getinfo;   //Todos los mensajes de comando estan creados ya
     private final String getver;
     private final String getstatus;
     private final String getgps;

@@ -89,7 +89,7 @@ public class Receiver implements MessageListener {
                     NofData1[3] = message[9];
 
                     byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
-                    Parser.Parser(AVLData); //Envio la data a pasear al metodo parser
+                    Parser.Parser(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser
 
                     System.out.println(" NofData1: " + Integer.parseInt(Utils.hexToString(NofData1), 16));
 
@@ -97,7 +97,7 @@ public class Receiver implements MessageListener {
 
                 } else {
                     //si no coinciden los crc
-                    
+                    //ESTO ES SOLO TEMPORAL
                     con.sendMessage("00000000000000150C01050000000D64656c6574657265636f7264730100001263".getBytes());  //delete records
                 }
 
