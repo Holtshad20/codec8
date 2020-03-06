@@ -47,8 +47,7 @@ public class CRC16 {
             0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641,
             0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040,};
        
-        //String rawData = Arrays.toString(payload);
-       // byte[] bytes = hexStringToByteArray(Arrays.toString(payload)); // for HEX
+
         int crc16 = 0x0000;
         for (byte b : payload) {
 

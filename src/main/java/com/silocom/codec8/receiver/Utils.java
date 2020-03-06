@@ -11,8 +11,6 @@ import java.util.Date;
  */
 public class Utils {
 
-   
-
     public static String hexToString(byte[] message) {
         StringBuilder answer = new StringBuilder();
         for (int i = 0; i < message.length; i++) {
@@ -26,8 +24,8 @@ public class Utils {
         }
         return answer.toString();
     }
-    
-      public static String bytesToHex(byte[] hashInBytes) {
+
+    public static String bytesToHex(byte[] hashInBytes) {
 
         StringBuilder sb = new StringBuilder();
         for (byte b : hashInBytes) {
@@ -36,12 +34,28 @@ public class Utils {
         return sb.toString();
 
     }
-      
-      public static Date convert(String inHexString){
-      
-        Date dateResult = new Date(Long.parseLong(inHexString,16));
-       
-         return dateResult;
-   }
-    
+
+    public static Date timeCalc(byte[] timeStamp) {
+
+        return Utils.convert(Utils.bytesToHex(timeStamp));
+    }
+
+    public static Date convert(String inHexString) {
+
+        Date dateResult = new Date(Long.parseLong(inHexString, 16));
+
+        return dateResult;
+    }
+
+    public static double longitude(byte[] lon) {
+
+        return (int) Long.parseLong(Utils.bytesToHex(lon), 16) / 1e7;
+
+    }
+
+    public static double latitude(byte[] lat) {
+
+        return (int) Long.parseLong(Utils.bytesToHex(lat), 16) / 1e7;
+    }
+
 }

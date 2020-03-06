@@ -3,7 +3,9 @@
  */
 package com.silocom.codec8.receiver;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -11,54 +13,72 @@ import java.util.Date;
  */
 public class Parser {
 
-    public static void Parser(byte[] message) {
+    public static List<CodecReport> Parser(byte[] message) {
+        List<CodecReport> answer = new ArrayList();
+        int index = 0;
+        while( index < (message.length - 25)){
+            
+            byte[] timestamp = new byte[8];
+            for (int i = 0; (i < timestamp.length); i++) {
+                timestamp[i] = message[index];
+                index++;
+            }
+            Date date = Utils.timeCalc(timestamp);
+           
 
-        byte[] timestamp = new byte[8];
-        for (int i = 0, j = 0; (i < timestamp.length); i++, j++) {
-            timestamp[i] = message[j];
+            byte[] priority = new byte[1];
+            priority[0] = message[index];
+            index++;
+
+            byte[] lon = new byte[4];
+            for (int i = 0; (i < lon.length); i++) {
+                lon[i] = message[index];
+                index++;
+            }
+
+            double longitude = Utils.longitude(lon);
+
+            byte[] lat = new byte[4];
+            for (int i = 0; (i < lat.length); i++) {
+                lat[i] = message[index];
+                index++;
+            }
+            double latitude = Utils.latitude(lat);
+
+            byte[] altitude = new byte[2];
+            for (int i = 0; i < altitude.length; i++) {
+                altitude[i] = message[index];
+                index++;
+            }
+
+
+            byte[] satInUse = new byte[1];
+            satInUse[0] = message[index];
+            index++;
+
+            byte[] speed = new byte[2];
+            for (int i = 0; i < speed.length; i++) {
+                speed[i] = message[index];
+                index++;
+            }
+
+            byte[] nOfTotalIO = new byte[1];
+            nOfTotalIO[0] = message[index];
+            index++;
+
+            // Falta implementar las entradas y salidas
+            
+            CodecReport report = new CodecReport(); //Tienes que crear la clase
+            report.setDate(date);
+            report.setPriority(priority);
+            report.setLatitude(latitude);
+            report.setLongitude(longitude);
+            report.setSatInUse(satInUse);
+            report.setSpeed(speed);
+            report.setnOfTotalIO(nOfTotalIO);
+            System.out.println(report.toString()); //hay que implementar el toString
         }
-        Date date = TimeStampCalculator.timeCalc(timestamp);
-
-        byte[] priority = new byte[1];
-        priority[0] = message[8];
-
-        byte[] lon = new byte[4];
-        for (int i = 0, j = 9; (i < lon.length); i++, j++) {
-            lon[i] = message[j];
-        }
-
-        double longitude = GPScalculator.longitude(lon);
-
-        byte[] lat = new byte[4];
-        for (int i = 0, j = 13; (i < lat.length); i++, j++) {
-            lat[i] = message[j];
-        }
-        double latitude = GPScalculator.latitude(lat);
-
-        byte[] altitude = new byte[2];
-        for (int i = 0, j = 17; i < altitude.length; i++) {
-            altitude[i] = message[j];
-        }
-
-
-        byte[] satInUse = new byte[1];
-        satInUse[0] = message[21];
-
-        byte[] speed = new byte[2];
-        for (int i = 0, j = 22; i < speed.length; i++) {
-            speed[i] = message[j];
-        }
-
-        byte[] nOfTotalIO = new byte[1];
-        nOfTotalIO[0] = message[25];
-  
-        
-        System.out.println(" timestamp: " + date);
-        System.out.println(" priority: " + Utils.hexToString(priority));
-        System.out.println(" latitude/longitude: " + latitude + "," + longitude);
-        System.out.println(" satellites in use: " + Utils.hexToString(satInUse));
-        System.out.println(" speed: " + Utils.hexToString(speed));
-        System.out.println(" nOfTotalIO: " + Integer.parseInt(Utils.hexToString(nOfTotalIO),16));
+        return null;  //?
 
     }
 

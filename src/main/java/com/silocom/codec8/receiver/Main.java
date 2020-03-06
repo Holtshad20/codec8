@@ -16,7 +16,7 @@ public class Main {
 
         byte[] IMEIExpected = new byte[]{0x33, 0x35, 0x32, 0x30, 0x39, 0x33, 0x30, 0x38, 0x37, 0x38, 0x36, 0x38, 0x32, 0x38, 0x36};
 
-        com.silocom.m2m.layer.physical.Connection con = PhysicalLayer.addConnection(3, 17500, "192.168.3.4");  //colocar tipo de conexion e IP valido
+        com.silocom.m2m.layer.physical.Connection con = PhysicalLayer.addConnection(3, 17500, "192.168.3.4"); 
         Receiver rec = new Receiver(con , IMEIExpected);
 
        
