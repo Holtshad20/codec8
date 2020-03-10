@@ -11,52 +11,55 @@ import java.util.Date;
  */
 class CodecReport {
 
-    Date date;
-    byte[] priority;
-    double latitude;
-    double longitude;
-    byte[] satInUse;
-    byte[] speed;
-    byte nOfTotalIO;
+    private Date date;
+    private byte[] priority;
+    private double latitude;
+    private double longitude;
+    private byte[] satInUse;
+    private byte[] speed;
+    private List<IOvalue> ioValues = new ArrayList();
 
-    public CodecReport(Date date, byte[] priority, double latitude, double longitude, byte[] satInUse, byte[] speed, byte nOfTotalIO) {
+    public CodecReport(){
+    
+    }
+    
+    public CodecReport(Date date, byte[] priority, double latitude, double longitude, byte[] satInUse, byte[] speed) {
         this.date = date;
         this.priority = priority;
         this.latitude = latitude;
         this.longitude = longitude;
         this.satInUse = satInUse;
         this.speed = speed;
-        this.nOfTotalIO = spenOfTotalIOed;
+       
     }
     
     
-    void getDate(Date date) {
+    
+    Date getDate(Date date) {
          return date;
     }
 
-    void getPriority(byte[] priority) {
+    byte[] getPriority() {
          return priority;
     }
 
-    void getLatitude(double latitude) {
+    double getLatitude() {
          return latitude;
     }
 
-    void getLongitude(double longitude) {
+    double getLongitude() {
          return longitude;
     }
 
-    void getSatInUse(byte[] satInUse) {
+    byte[] getSatInUse() {
         return satInUse;
     }
 
-    void getSpeed(byte[] speed) {
+    byte[] getSpeed() {    //hacer public los getters y setter
         return speed;  
     }
 
-    void getnOfTotalIO(byte[] nOfTotalIO) {
-        return nOfTotalIO;
-    }
+  
     
     
     void setDate(Date date) {
@@ -83,14 +86,14 @@ class CodecReport {
     this.speed = speed;
     }
 
-    void setnOfTotalIO(byte[] nOfTotalIO) {
-    this.nOfTotalIO = nOfTotalIO;
-    }
+    
     
     public static class IOvalue{
     
         byte id;
         byte[] value;
+        
+        //hacer getter y setter de id y value
     
     }
     
