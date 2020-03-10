@@ -87,4 +87,12 @@ class CodecReport {
     this.nOfTotalIO = nOfTotalIO;
     }
     
+    public static class IOvalue{
+    
+        byte id;
+        byte[] value;
+    
+    }
+    
 }
+
