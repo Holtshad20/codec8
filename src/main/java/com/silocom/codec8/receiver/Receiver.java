@@ -16,11 +16,12 @@ public class Receiver implements MessageListener {
 
     Connection con;
     private final byte[] IMEIExpected;
+    final int timeout;
 
-    public Receiver(Connection con, byte[] IMEIExpected) {
+    public Receiver(Connection con, byte[] IMEIExpected, int timeout) {
         this.con = con;
         this.IMEIExpected = IMEIExpected;
-
+        this.timeout = timeout;
     }
 
     public void receiveMessage(byte[] message) {
@@ -28,12 +29,8 @@ public class Receiver implements MessageListener {
         if (message.length == 17) {  //Si es un mensaje con IMEI
             System.out.println(" IMEI: " + Utils.hexToString(message));
             byte[] IMEIReceived = new byte[15];
-            try {
-                for (int i = 0, j = 2; i < message.length - 1; i++, j++) {
-                    IMEIReceived[i] = message[j];
-                }
-            } catch (Exception e) {
-
+            for (int i = 0, j = 2; i < message.length - 1; i++, j++) {
+                IMEIReceived[i] = message[j];
             }
 
             byte[] IMEIlenght = new byte[2];
@@ -89,7 +86,7 @@ public class Receiver implements MessageListener {
                     NofData1[3] = message[9];
 
                     byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
-                    Parser.Parser(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser
+                    Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser
 
                     System.out.println(" NofData1: " + Integer.parseInt(Utils.hexToString(NofData1), 16));
 
@@ -101,7 +98,7 @@ public class Receiver implements MessageListener {
                     con.sendMessage("00000000000000150C01050000000D64656c6574657265636f7264730100001263".getBytes());  //delete records
                 }
 
-            } else {
+            } else { //implementar luego el timeout
                 //No proceso mensajes que no sean codec8
             }
         }
@@ -110,21 +107,23 @@ public class Receiver implements MessageListener {
 
     @Override
     public void receiveMessage(byte[] message, Connection con) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    
-    if (Arrays.equals(IMEIReceived, IMEIExpected)) {  //Es el IMEI esperado?
-                this.con = con;  //si es IMEI
-                con.addListener(this);
-                //Send 0x01 to the device
-                byte[] accept = new byte[]{0x01};
-                con.sendMessage(accept);         //Envio accept al equipo si es el IMEI
-            } else {
-                byte[] deny = new byte[]{0x00};
-                con.sendMessage(deny);         //envio deny al equipo si no es el IMEI
-            }
-        
-        
-        
+
+        byte[] IMEIReceived = new byte[15];
+        for (int i = 0, j = 2; i < message.length - 1; i++, j++) {
+            IMEIReceived[i] = message[j];
+        }
+
+        if (Arrays.equals(IMEIReceived, IMEIExpected)) {  //Es el IMEI esperado?
+            this.con = con;  //si es IMEI
+            con.addListener(this);
+            //Send 0x01 to the device
+            byte[] accept = new byte[]{0x01};
+            con.sendMessage(accept);         //Envio accept al equipo si es el IMEI
+        } else {
+            byte[] deny = new byte[]{0x00};
+            con.sendMessage(deny);         //envio deny al equipo si no es el IMEI
+        }
+
     }
 
 }

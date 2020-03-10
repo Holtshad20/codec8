@@ -12,114 +12,96 @@ import java.util.Scanner;
  *
  * @author silocom01
  */
-public class Sender{
+public class Sender {
 
     Receiver rec;
     private final static String GETINFO = "command";   //Todos los mensajes de comando estan creados ya
-    private final String getver;
-    private final String getstatus;
-    private final String getgps;
-    private final String getio;
-    private final String readio;
-    private final String battery;
-    private final String setdigout1;
-    private final String setdigout0;
-    private final String ggps;
-    
-    public Sender(Connection con, String getinfo, String getver, String getstatus, String getgps, String getio, String ggps,
-            String readio, String battery, String setdiout1, String setdigout0) {
-        
-        this.con = con;
-        this.getinfo = getinfo;
-        this.getver = getver;
-        this.getstatus = getstatus;
-        this.getgps = getgps;
-        this.ggps = ggps;
-        this.getio = getio;
-        this.readio = readio;
-        this.battery = battery;
-        this.setdigout1 = setdiout1;
-        this.setdigout0 = setdigout0;
-    }
+    private final static String GETVER = "";
+    private final static String GETSTATUS = "";
+    private final static String GETGPS = "";
+    private final static String GETIO = "";
+    private final static String READIO = "";
+    private final static String BATTERY = "";
+    private final static String SETDIGOUT1 = "";
+    private final static String SETDIGOUT0 = "";
+    private final static String GGPS = "";
 
-    
 
     public void commands(String command) {
         //Scanner input = new Scanner(System.in);
-        
+
         switch (command) {
 
             case "getinfo":   //Device runtime system information
 
-                byte[] getinfor = getinfo.getBytes();
+                byte[] getinfor = GETINFO.getBytes();
                 rec.getCon().sendMessage(getinfor);
 
                 break;
 
             case "getver":  //Returns code version, device IMEI, modem app version, RTC time, Init time, Uptime and BT MAC address.
 
-                byte[] getvers = getver.getBytes();
-                con.sendMessage(getvers);
+                byte[] getvers = GETVER.getBytes();
+                rec.getCon().sendMessage(getvers);
 
                 break;
 
             case "getstatus": //Modem Status information
 
-                byte[] getstat = getstatus.getBytes();
-                con.sendMessage(getstat);
+                byte[] getstat = GETSTATUS.getBytes();
+               rec.getCon().sendMessage(getstat);
 
                 break;
 
             case "getgps":  //	Current GPS data, date and time
 
-                byte[] getgpss = getgps.getBytes();
-                con.sendMessage(getgpss);
+                byte[] getgpss = GETGPS.getBytes();
+                rec.getCon().sendMessage(getgpss);
 
                 break;
 
             case "getio":  //Readout analog input,digital input and output
 
-                byte[] getioo = getio.getBytes();
-                con.sendMessage(getioo);
+                byte[] getioo = GETIO.getBytes();
+                rec.getCon().sendMessage(getioo);
 
                 break;
 
             case "ggps": //Returns location information with Google maps link
 
-                byte[] ggpss = ggps.getBytes();  //Not sure
-                con.sendMessage(ggpss);
+                byte[] ggpss = GGPS.getBytes();  //Not sure
+                rec.getCon().sendMessage(ggpss);
 
                 break;
 
             case "readio":  //Returns IO status, # AVL ID
-                byte[] readioo = readio.getBytes();  //Not sure
-                con.sendMessage(readioo);
+                byte[] readioo = READIO.getBytes();  //Not sure
+                rec.getCon().sendMessage(readioo);
 
                 break;
 
             case "battery":  //Returns battery state info
 
-                byte[] batteryy = battery.getBytes();  //Not sure
-                con.sendMessage(batteryy);
+                byte[] batteryy = BATTERY.getBytes();  //Not sure
+                rec.getCon().sendMessage(batteryy);
 
                 break;
 
             case "setdigout 1":  //Set digital output ## DOUT1 DOUT2
 
-                byte[] setdigout1_ = setdigout1.getBytes();
-                con.sendMessage(setdigout1_);
+                byte[] setdigout1_ = SETDIGOUT1.getBytes();
+                rec.getCon().sendMessage(setdigout1_);
 
                 break;
 
             case "setdigout 0":
 
-                byte[] setdigout0_ = setdigout0.getBytes();
-                con.sendMessage(setdigout0_);
+                byte[] setdigout0_ = SETDIGOUT0.getBytes();
+                rec.getCon().sendMessage(setdigout0_);
 
                 break;
 
         }
     }
-
 
 }

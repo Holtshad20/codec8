@@ -3,7 +3,9 @@
  */
 package com.silocom.codec8.receiver;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -19,10 +21,10 @@ class CodecReport {
     private byte[] speed;
     private List<IOvalue> ioValues = new ArrayList();
 
-    public CodecReport(){
-    
+    public CodecReport() {
+
     }
-    
+
     public CodecReport(Date date, byte[] priority, double latitude, double longitude, byte[] satInUse, byte[] speed) {
         this.date = date;
         this.priority = priority;
@@ -30,25 +32,23 @@ class CodecReport {
         this.longitude = longitude;
         this.satInUse = satInUse;
         this.speed = speed;
-       
+
     }
-    
-    
-    
+
     Date getDate(Date date) {
-         return date;
+        return date;
     }
 
     byte[] getPriority() {
-         return priority;
+        return priority;
     }
 
     double getLatitude() {
-         return latitude;
+        return latitude;
     }
 
     double getLongitude() {
-         return longitude;
+        return longitude;
     }
 
     byte[] getSatInUse() {
@@ -56,55 +56,65 @@ class CodecReport {
     }
 
     byte[] getSpeed() {    //hacer public los getters y setter
-        return speed;  
+        return speed;
     }
 
-  
-    
-    
     void setDate(Date date) {
-    this.date = date;
+        this.date = date;
     }
 
     void setPriority(byte[] priority) {
-    this.priority = priority;
+        this.priority = priority;
     }
 
     void setLatitude(double latitude) {
-    this.latitude = latitude;
+        this.latitude = latitude;
     }
 
     void setLongitude(double longitude) {
-    this.longitude = longitude;
+        this.longitude = longitude;
     }
 
     void setSatInUse(byte[] satInUse) {
-    this.satInUse = satInUse;
+        this.satInUse = satInUse;
     }
 
     void setSpeed(byte[] speed) {
-    this.speed = speed;
+        this.speed = speed;
     }
 
-    void addIOvalue(IOvalue value){
-    
-    this.ioValues.add(value);    
-        
+    void addIOvalue(IOvalue value) {
+
+        this.ioValues.add(value);
+
     }
-    
-    public static class IOvalue{
-    
+
+    public static class IOvalue {
+
+        public void setId(byte id) {
+            this.id = id;
+        }
+
+        public void setValue(byte[] value) {
+            this.value = value;
+        }
+
+        public byte getId() {
+            return id;
+        }
+
+        public byte[] getValue() {
+            return value;
+        }
+
         byte id;
         byte[] value;
-        
-        public IOvalue(byte id, byte[] value){
-        this.id= id;
-        this.value= value;
-        }
-        
-        //hacer getter y setter de id y value
-    
-    }
-    
-}
 
+        public IOvalue(byte id, byte[] value) {
+            this.id = id;
+            this.value = value;
+        }
+
+    }
+
+}
