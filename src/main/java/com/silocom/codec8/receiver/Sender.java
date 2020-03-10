@@ -14,8 +14,8 @@ import java.util.Scanner;
  */
 public class Sender{
 
-    Connection con;
-    private final String getinfo;   //Todos los mensajes de comando estan creados ya
+    Receiver rec;
+    private final static String GETINFO = "command";   //Todos los mensajes de comando estan creados ya
     private final String getver;
     private final String getstatus;
     private final String getgps;
@@ -52,7 +52,7 @@ public class Sender{
             case "getinfo":   //Device runtime system information
 
                 byte[] getinfor = getinfo.getBytes();
-                con.sendMessage(getinfor);
+                rec.getCon().sendMessage(getinfor);
 
                 break;
 
