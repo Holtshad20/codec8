@@ -11,32 +11,80 @@ import java.util.Date;
  */
 class CodecReport {
 
+    Date date;
+    byte[] priority;
+    double latitude;
+    double longitude;
+    byte[] satInUse;
+    byte[] speed;
+    byte nOfTotalIO;
+
+    public CodecReport(Date date, byte[] priority, double latitude, double longitude, byte[] satInUse, byte[] speed, byte nOfTotalIO) {
+        this.date = date;
+        this.priority = priority;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.satInUse = satInUse;
+        this.speed = speed;
+        this.nOfTotalIO = spenOfTotalIOed;
+    }
+    
+    
+    void getDate(Date date) {
+         return date;
+    }
+
+    void getPriority(byte[] priority) {
+         return priority;
+    }
+
+    void getLatitude(double latitude) {
+         return latitude;
+    }
+
+    void getLongitude(double longitude) {
+         return longitude;
+    }
+
+    void getSatInUse(byte[] satInUse) {
+        return satInUse;
+    }
+
+    void getSpeed(byte[] speed) {
+        return speed;  
+    }
+
+    void getnOfTotalIO(byte[] nOfTotalIO) {
+        return nOfTotalIO;
+    }
+    
+    
     void setDate(Date date) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.date = date;
     }
 
     void setPriority(byte[] priority) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.priority = priority;
     }
 
     void setLatitude(double latitude) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.latitude = latitude;
     }
 
     void setLongitude(double longitude) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.longitude = longitude;
     }
 
     void setSatInUse(byte[] satInUse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.satInUse = satInUse;
     }
 
     void setSpeed(byte[] speed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.speed = speed;
     }
 
     void setnOfTotalIO(byte[] nOfTotalIO) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.nOfTotalIO = nOfTotalIO;
     }
     
 }
