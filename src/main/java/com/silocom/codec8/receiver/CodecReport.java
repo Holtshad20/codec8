@@ -86,12 +86,21 @@ class CodecReport {
     this.speed = speed;
     }
 
+    void addIOvalue(IOvalue value){
     
+    this.ioValues.add(value);    
+        
+    }
     
     public static class IOvalue{
     
         byte id;
         byte[] value;
+        
+        public IOvalue(byte id, byte[] value){
+        this.id= id;
+        this.value= value;
+        }
         
         //hacer getter y setter de id y value
     
