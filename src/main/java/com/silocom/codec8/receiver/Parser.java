@@ -75,7 +75,61 @@ public class Parser {
             report.setLongitude(longitude);
             report.setSatInUse(satInUse);
             report.setSpeed(speed);
-            report.setnOfTotalIO(nOfTotalIO);
+            
+            int noByte1 = message[index]&0FF;
+            index++;
+            
+            for(int i = 0; i< noByte1;i++){
+            byte idIO = message[index];
+            index++;
+            byte[] valueIO = new byte[1];
+            valueIO[0] = message[index];
+            index++;
+                report.addIOvalue(new IOvalue(idIO, valueIO));
+            }
+            
+            int noByte2 = message[index]&0FF;
+            index++;
+            
+            for(int i = 0; i< noByte2;i++){
+            byte idIO = message[index];
+            index++;
+            byte[] valueIO = new byte[2];
+            for(int j = 0; j< valueIO.length; j++){
+                valueIO[j] = message[index];
+                index++;
+            }
+                report.addIOvalue(new IOvalue(idIO, valueIO));
+            }
+            
+            int noByte4 = message[index]&0FF;
+            index++;
+            
+            for(int i = 0; i< noByte4;i++){
+            byte idIO = message[index];
+            index++;
+            byte[] valueIO = new byte[4];
+            for(int j = 0; j< valueIO.length; j++){
+                valueIO[j] = message[index];
+                index++;
+            }
+                report.addIOvalue(new IOvalue(idIO, valueIO));
+            }
+            
+            int noByte8 = message[index]&0FF;
+            index++;
+            
+            for(int i = 0; i< noByte8;i++){
+            byte idIO = message[index];
+            index++;
+            byte[] valueIO = new byte[8];
+           for(int j = 0; j< valueIO.length; j++){
+                valueIO[j] = message[index];
+                index++;
+            }
+                report.addIOvalue(new IOvalue(idIO, valueIO));
+            }
+            
             answer.add(report);
             System.out.println(report.toString()); //hay que implementar el toString
         }
