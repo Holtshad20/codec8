@@ -76,9 +76,10 @@ public class Parser {
             report.setSatInUse(satInUse);
             report.setSpeed(speed);
             report.setnOfTotalIO(nOfTotalIO);
+            answer.add(report);
             System.out.println(report.toString()); //hay que implementar el toString
         }
-        return null;  //?
+        return answer;
 
     }
 
