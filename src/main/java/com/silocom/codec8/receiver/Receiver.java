@@ -45,8 +45,8 @@ public class Receiver implements MessageListener {
                 byte[] accept = new byte[]{0x01};
                 con.sendMessage(accept);         //Envio accept al equipo si es el IMEI
             } else {
-                byte[] deny = new byte[]{0x00};
-                con.sendMessage(deny);          //envio deny al equipo si no es el IMEI
+                /*byte[] deny = new byte[]{0x00};
+                con.sendMessage(deny);  */        //envio deny al equipo si no es el IMEI
             }
 
         } else {   //Si no es mensaje con IMEI
@@ -111,6 +111,20 @@ public class Receiver implements MessageListener {
     @Override
     public void receiveMessage(byte[] message, Connection con) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    if (Arrays.equals(IMEIReceived, IMEIExpected)) {  //Es el IMEI esperado?
+                this.con = con;  //si es IMEI
+                con.addListener(this);
+                //Send 0x01 to the device
+                byte[] accept = new byte[]{0x01};
+                con.sendMessage(accept);         //Envio accept al equipo si es el IMEI
+            } else {
+                byte[] deny = new byte[]{0x00};
+                con.sendMessage(deny);         //envio deny al equipo si no es el IMEI
+            }
+        
+        
+        
     }
 
 }
