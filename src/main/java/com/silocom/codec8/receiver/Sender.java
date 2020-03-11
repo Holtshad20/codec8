@@ -15,16 +15,15 @@ import java.util.Scanner;
 public class Sender {
 
     Receiver rec;
-    private final static String GETINFO = "command";   //Todos los mensajes de comando estan creados ya
-    private final static String GETVER = "";
-    private final static String GETSTATUS = "";
-    private final static String GETGPS = "";
-    private final static String GETIO = "";
-    private final static String READIO = "";
-    private final static String BATTERY = "";
-    private final static String SETDIGOUT1 = "";
-    private final static String SETDIGOUT0 = "";
-    private final static String GGPS = "";
+    private final static String GETINFO = "000000000000000F0C010500000007676574696E666F0100004312";   //Todos los mensajes de comando estan creados ya
+    private final static String GETVER = "000000000000000E0C010500000006676574766572010000A4C2";
+    private final static String GETSTATUS = "00000000000000110C0105000000096765747374617475730100008CD7";
+    private final static String GETGPS = "000000000000000E0C010500000006676574677073010000CCD7";
+    private final static String GETIO = "000000000000000D0C010500000005676574696f01000000CB";
+    private final static String BATTERY = "000000000000000F0C01050000000762617474657279010000FE37";
+    private final static String SETDIGOUT1 = "00000000000000130C01050000000B7365746469676f7574203101000087A2";
+    private final static String SETDIGOUT0 = "00000000000000130C01050000000B7365746469676f7574203001000017A3";
+   
 
 
     public void commands(String command) {
@@ -34,70 +33,58 @@ public class Sender {
 
             case "getinfo":   //Device runtime system information
 
-                byte[] getinfor = GETINFO.getBytes();
-                rec.getCon().sendMessage(getinfor);
+                byte[] getinfo = GETINFO.getBytes();
+             //   rec.getCon().sendMessage(getinfo);
 
                 break;
 
             case "getver":  //Returns code version, device IMEI, modem app version, RTC time, Init time, Uptime and BT MAC address.
 
-                byte[] getvers = GETVER.getBytes();
-                rec.getCon().sendMessage(getvers);
+                byte[] getver = GETVER.getBytes();
+            //    rec.getCon().sendMessage(getver);
 
                 break;
 
             case "getstatus": //Modem Status information
 
-                byte[] getstat = GETSTATUS.getBytes();
-               rec.getCon().sendMessage(getstat);
+                byte[] getstatus = GETSTATUS.getBytes();
+           //    rec.getCon().sendMessage(getstatus);
 
                 break;
 
             case "getgps":  //	Current GPS data, date and time
 
-                byte[] getgpss = GETGPS.getBytes();
-                rec.getCon().sendMessage(getgpss);
+                byte[] getgps = GETGPS.getBytes();
+           //     rec.getCon().sendMessage(getgps);
 
                 break;
 
             case "getio":  //Readout analog input,digital input and output
 
-                byte[] getioo = GETIO.getBytes();
-                rec.getCon().sendMessage(getioo);
+                byte[] getio = GETIO.getBytes();
+            //    rec.getCon().sendMessage(getio);
 
                 break;
 
-            case "ggps": //Returns location information with Google maps link
-
-                byte[] ggpss = GGPS.getBytes();  //Not sure
-                rec.getCon().sendMessage(ggpss);
-
-                break;
-
-            case "readio":  //Returns IO status, # AVL ID
-                byte[] readioo = READIO.getBytes();  //Not sure
-                rec.getCon().sendMessage(readioo);
-
-                break;
 
             case "battery":  //Returns battery state info
 
-                byte[] batteryy = BATTERY.getBytes();  //Not sure
-                rec.getCon().sendMessage(batteryy);
+                byte[] battery = BATTERY.getBytes();  //Not sure
+            //    rec.getCon().sendMessage(battery);
 
                 break;
 
             case "setdigout 1":  //Set digital output ## DOUT1 DOUT2
 
-                byte[] setdigout1_ = SETDIGOUT1.getBytes();
-                rec.getCon().sendMessage(setdigout1_);
+                byte[] setdigout1 = SETDIGOUT1.getBytes();
+           //     rec.getCon().sendMessage(setdigout1);
 
                 break;
 
             case "setdigout 0":
 
-                byte[] setdigout0_ = SETDIGOUT0.getBytes();
-                rec.getCon().sendMessage(setdigout0_);
+                byte[] setdigout0 = SETDIGOUT0.getBytes();
+            //    rec.getCon().sendMessage(setdigout0);
 
                 break;
 

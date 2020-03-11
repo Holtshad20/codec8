@@ -35,55 +35,55 @@ class CodecReport {
 
     }
 
-    Date getDate(Date date) {
+    public Date getDate(Date date) {
         return date;
     }
 
-    byte[] getPriority() {
+    public byte[] getPriority() {
         return priority;
     }
 
-    double getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    double getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    byte[] getSatInUse() {
+    public byte[] getSatInUse() {
         return satInUse;
     }
 
-    byte[] getSpeed() {    //hacer public los getters y setter
+    public byte[] getSpeed() {    //hacer public los getters y setter
         return speed;
     }
 
-    void setDate(Date date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    void setPriority(byte[] priority) {
+    public void setPriority(byte[] priority) {
         this.priority = priority;
     }
 
-    void setLatitude(double latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    void setLongitude(double longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    void setSatInUse(byte[] satInUse) {
+    public void setSatInUse(byte[] satInUse) {
         this.satInUse = satInUse;
     }
 
-    void setSpeed(byte[] speed) {
+    public void setSpeed(byte[] speed) {
         this.speed = speed;
     }
 
-    void addIOvalue(IOvalue value) {
+    public void addIOvalue(IOvalue value) {
 
         this.ioValues.add(value);
 

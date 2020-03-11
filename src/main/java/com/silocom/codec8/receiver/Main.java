@@ -12,7 +12,7 @@ import com.silocom.m2m.layer.physical.PhysicalLayer;
 public class Main {
 
     public static void main(String[] args) {
-        int timeout = 3;
+        int timeout = 3000;
         byte[] IMEIExpected = new byte[]{0x33, 0x35, 0x32, 0x30, 0x39, 0x33, 0x30, 0x38, 0x37, 0x38, 0x36, 0x38, 0x32, 0x38, 0x36};
 
         com.silocom.m2m.layer.physical.Connection con = PhysicalLayer.addConnection(3, 17500, "192.168.3.4");
