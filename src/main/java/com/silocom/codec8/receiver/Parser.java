@@ -137,26 +137,38 @@ public class Parser {
 
     public static void codec12Parser_getinfo(byte[] codec12Data) {
 
+        
+        
     }
 
     public static void codec12Parser_getver(byte[] codec12Data) {
 
+        
+        
     }
 
     public static void codec12Parser_getstatus(byte[] bytecodec12Data) {
 
+        
+        
     }
 
     public static void codec12Parser_getgps(byte[] codec12Data) {
 
+        
+        
     }
 
     public static void codec12Parser_getio(byte[] codec12Data) {
 
+        
+        
     }
 
     public static void codec12Parser_battery(byte[] codec12Data) {
 
+        
+        
     }
 
 }

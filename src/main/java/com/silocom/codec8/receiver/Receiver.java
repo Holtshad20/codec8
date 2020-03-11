@@ -124,17 +124,18 @@ public class Receiver implements MessageListener {
                 case codec12:
                     System.out.println(" codec12 message: " + Utils.hexToString(message));
 
-                    //separar la información de cabecera de la data
+                    //separar el header y demas de la data
                     byte[] codec12Data = Arrays.copyOfRange(message, 15, message.length - 5);
-                    
+
                     byte[] toDecode = new byte[3];
-                    
-                    toDecode[0] = message[15];  //First word 
+
+                    toDecode[0] = message[15];  //Primera letra del comando
                     toDecode[1] = message[16];  //...
                     toDecode[3] = message[17];  //...
-                    
-                    String decoded = new String(toDecode);
-                    //de alguna forma verificar la primera variable recibida en el mensaje y hacer switch/case
+
+                    String decoded = new String(toDecode); /* verificar las tres primeras letras de cada mensaje para saber 
+                                                             que tipo de comando es, se tomo un arreglo de 3 bytes para hacerlo estandar*/
+
                     switch (decoded) {
                         case "RTC":  //mensaje de getinfo   0x525443 -- RTC en HEX
                             Parser.codec12Parser_getinfo(codec12Data);
@@ -144,7 +145,7 @@ public class Receiver implements MessageListener {
                             Parser.codec12Parser_getver(codec12Data);
                             break;
 
-                        case "Dat": //getstatus   0x446174 
+                        case "Dat": //mensaje de getstatus   0x446174 
                             Parser.codec12Parser_getstatus(codec12Data);
                             break;
 
@@ -160,7 +161,7 @@ public class Receiver implements MessageListener {
                             Parser.codec12Parser_battery(codec12Data);
                             break;
                     }
-                    
+
                     break;
 
             }
