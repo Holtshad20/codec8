@@ -53,7 +53,7 @@ public class Sender {
                 break;
 
             case "getgps":  //	Current GPS data, date and time
-
+    
                 byte[] getgps = GETGPS.getBytes();
            //     rec.getCon().sendMessage(getgps);
 

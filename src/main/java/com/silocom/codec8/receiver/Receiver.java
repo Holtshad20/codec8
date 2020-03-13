@@ -79,8 +79,12 @@ public class Receiver implements MessageListener {
                     System.out.println(" CRC16 calculated " + Utils.hexToString(CRC16Codec8_Calculated));
 
                     byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
-                    //Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
-
+                    
+                    try{
+                    Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
+                    }catch(Exception e){
+                    e.printStackTrace();
+                    }
                     byte[] NofData1 = new byte[4];
                     NofData1[0] = 0x00;
                     NofData1[1] = 0x00;
@@ -139,10 +143,6 @@ public class Receiver implements MessageListener {
                     switch (decoded) {
                         case "RTC":  //mensaje de getinfo   0x525443 -- RTC en HEX
                             Parser.codec12Parser_getinfo(codec12Data);
-                            break;
-
-                        case "Ver": //mensaje de getver  0x566572 
-                            Parser.codec12Parser_getver(codec12Data);
                             break;
 
                         case "Dat": //mensaje de getstatus   0x446174 
