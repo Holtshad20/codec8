@@ -36,8 +36,8 @@ public class Sender {
               
                 if (report == null) {
                     
-                    
-                }
+                    //TODO
+                }else{}
                 break;
 
             case "getver":  //Returns code version, device IMEI, modem app version, RTC time, Init time, Uptime and BT MAC address.
