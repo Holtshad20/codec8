@@ -17,7 +17,7 @@ class CodecReport {
     private byte[] priority;
     private double latitude;
     private double longitude;
-    private byte[] satInUse;
+    private int satInUse;
     private byte[] speed;
     private List<IOvalue> ioValues = new ArrayList();
 
@@ -25,7 +25,7 @@ class CodecReport {
 
     }
 
-    public CodecReport(Date date, byte[] priority, double latitude, double longitude, byte[] satInUse, byte[] speed) {
+    public CodecReport(Date date, byte[] priority, double latitude, double longitude, int satInUse, byte[] speed) {
         this.date = date;
         this.priority = priority;
         this.latitude = latitude;
@@ -51,7 +51,7 @@ class CodecReport {
         return longitude;
     }
 
-    public byte[] getSatInUse() {
+    public int getSatInUse() {
         return satInUse;
     }
 
@@ -75,7 +75,7 @@ class CodecReport {
         this.longitude = longitude;
     }
 
-    public void setSatInUse(byte[] satInUse) {
+    public void setSatInUse(int satInUse) {
         this.satInUse = satInUse;
     }
 

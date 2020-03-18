@@ -6,7 +6,9 @@ package com.silocom.codec8.receiver;
 import com.silocom.codec8.receiver.CodecReport.IOvalue;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,8 +55,8 @@ public class Parser {
                 index++;
             }
 
-            byte[] satInUse = new byte[1];
-            satInUse[0] = message[index];
+            int satInUse = message[index] & 0xFF;
+
             index++;
 
             byte[] speed = new byte[2];
@@ -182,28 +184,55 @@ public class Parser {
 
     }
 
-    public static void codec12Parser_getgps(byte[] codec12Data) {
+    public static CodecReport codec12Parser_getgps(byte[] codec12Data) {
         //GPS:1 Sat:13 Lat:10.494710 Long:-66.831467 Alt:872 Speed:0 Dir:356 Date: 2020/3/13 Time: 13:37:15
+        CodecReport answer = new CodecReport();
 
         String toDecode = new String(codec12Data);
-        String match = new String();
-        Pattern pattern = Pattern.compile("RTC:(?:(?!RTC|Init).)*");  //Pattern
+
+        Map<String, String> values = new HashMap();
+
+        String patternStr = "[1-9]{3}"; //falta patron
+        Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(toDecode);
 
         while (matcher.find()) {
-            match = matcher.group();
+            int index2 = matcher.start();
+            String[] val = toDecode.substring(0, index2).split(":");
+            values.put(val[0], val[1]);
+            toDecode = toDecode.substring(index2 + 1);
+            matcher = pattern.matcher(toDecode);
+        }
+        int index = toDecode.indexOf(":");
+
+        values.put(toDecode.substring(0, index), toDecode.substring(index + 1));
+
+        for (String key : values.keySet()) {
+            switch (key) {
+                case "Sat":
+
+                    answer.setSatInUse(Integer.parseInt(values.get(key)));
+
+                    break;
+
+            }
         }
 
-        String replacedValue = match.replaceAll("[/: ]+", "");
+        return answer;
 
     }
 
-    public static void codec12Parser_getio(byte[] codec12Data) {
+    public static CodecReport codec12Parser_getio(byte[] codec12Data) {
         //DI1:0 AIN1:174 DO1:0
+        CodecReport answer = new CodecReport();
+        return answer;
+
     }
 
-    public static void codec12Parser_battery(byte[] codec12Data) {
+    public static CodecReport codec12Parser_battery(byte[] codec12Data) {
         //BatState: 1 FSMState: ACTIVE ChargerIC: DONE ExtV: 11859 BatV: 4115 BatI: 0
+        CodecReport answer = new CodecReport();
+        return answer;
     }
 
 }

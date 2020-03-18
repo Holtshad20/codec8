@@ -6,6 +6,8 @@ package com.silocom.codec8.receiver;
 import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -16,7 +18,12 @@ public class Receiver implements MessageListener {
 
     Connection con;
     private final byte[] imeiExpected;
-    final int timeout;
+    private final int imeiLength = 17;
+    int timeout;
+
+    private final Object SYNC = new Object();
+
+    private CodecReport answer;
 
     public Receiver(Connection con, byte[] imeiExpected, int timeout) {
         this.con = con;
@@ -24,33 +31,19 @@ public class Receiver implements MessageListener {
         this.timeout = timeout;
     }
 
+    @Override
     public void receiveMessage(byte[] message) {
 
         final int codec8 = 0x08;
         final int codec8E = 0x8E;
         final int codec12 = 0x0C;
-        final int imeiLength = 17;
 
         if (message.length == imeiLength) {
             System.out.println("IMEI message: " + Utils.hexToString(message));
 
             byte[] imeiReceived = new byte[15];
 
-            imeiReceived[0] = message[2];
-            imeiReceived[1] = message[3];
-            imeiReceived[2] = message[4];
-            imeiReceived[3] = message[5];
-            imeiReceived[4] = message[6];
-            imeiReceived[5] = message[7];
-            imeiReceived[6] = message[8];
-            imeiReceived[7] = message[9];
-            imeiReceived[8] = message[10];
-            imeiReceived[9] = message[11];
-            imeiReceived[10] = message[12];
-            imeiReceived[11] = message[13];
-            imeiReceived[12] = message[14];
-            imeiReceived[13] = message[15];
-            imeiReceived[14] = message[16];
+            System.arraycopy(message, 2, imeiReceived, 0, imeiReceived.length);
 
             if (Arrays.equals(imeiReceived, imeiExpected)) {
 
@@ -58,7 +51,7 @@ public class Receiver implements MessageListener {
                 con.sendMessage(accept);
             }
 
-        } else {
+        } else if (message.length > 9) {
 
             int messageType = message[8] & 0xFF;  //en el byte 8 del mensaje que no es IMEI, se encuentra el tipo de protocolo utilizado
             switch (messageType) {
@@ -79,11 +72,11 @@ public class Receiver implements MessageListener {
                     System.out.println(" CRC16 calculated " + Utils.hexToString(CRC16Codec8_Calculated));
 
                     byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
-                    
-                    try{
-                    Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
-                    }catch(Exception e){
-                    e.printStackTrace();
+
+                    try {
+                        Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     byte[] NofData1 = new byte[4];
                     NofData1[0] = 0x00;
@@ -137,28 +130,32 @@ public class Receiver implements MessageListener {
                     toDecode[1] = message[16];  //...
                     toDecode[3] = message[17];  //...
 
-                    String decoded = new String(toDecode); /* verificar las tres primeras letras de cada mensaje para saber 
+                    String decoded = new String(toDecode);
+                    /* verificar las tres primeras letras de cada mensaje para saber 
                                                              que tipo de comando es, se tomo un arreglo de 3 bytes para hacerlo estandar*/
 
                     switch (decoded) {
-                        case "RTC":  //mensaje de getinfo   0x525443 -- RTC en HEX
-                            Parser.codec12Parser_getinfo(codec12Data);
-                            break;
-
-                        case "Dat": //mensaje de getstatus   0x446174 
-                            Parser.codec12Parser_getstatus(codec12Data);
-                            break;
-
                         case "GPS": //mensaje de getgps    0x475053
-                            Parser.codec12Parser_getgps(codec12Data);
+                            synchronized (SYNC) {
+
+                                answer = Parser.codec12Parser_getgps(codec12Data);
+                                SYNC.notifyAll();
+                            }
                             break;
 
                         case "DI1": //mensaje de getio    0x444931
-                            Parser.codec12Parser_getio(codec12Data);
+                            synchronized (SYNC) {
+                                answer = Parser.codec12Parser_getio(codec12Data);
+                                SYNC.notifyAll();
+                            }
                             break;
 
                         case "Bat": //mensaje de battery
-                            Parser.codec12Parser_battery(codec12Data);
+                            synchronized (SYNC) {
+                                answer = Parser.codec12Parser_battery(codec12Data);
+                                SYNC.notifyAll();
+                            }
+                            
                             break;
                     }
 
@@ -168,26 +165,48 @@ public class Receiver implements MessageListener {
         }
     }
 
-    @Override
-    public void receiveMessage(byte[] message, Connection con
-    ) {
-        throw new UnsupportedOperationException("Not supported yet.");
-        /*  byte[] IMEIReceived = new byte[15];
-        for (int i = 0, j = 2; i < message.length - 1; i++, j++) {
-            IMEIReceived[i] = message[j];
+    // @Override
+    public void receiveMessage(byte[] message, Connection con) {
+        //  throw new UnsupportedOperationException("Not supported yet.");
+
+        if (message.length == imeiLength) {
+            byte[] imeiReceived = new byte[15];
+
+            System.arraycopy(message, 2, imeiReceived, 0, imeiReceived.length);
+
+            if (Arrays.equals(imeiReceived, imeiExpected)) {  //Es el IMEI esperado?
+                this.con = con;  //si es IMEI
+                con.addListener(this);
+                //Send 0x01 to the device
+                byte[] accept = new byte[]{0x01};
+                con.sendMessage(accept);         //Envio accept al equipo si es el IMEI
+            } else {
+                byte[] deny = new byte[]{0x00};
+                con.sendMessage(deny);         //envio deny al equipo si no es el IMEI
+            }
+
         }
-
-        if (Arrays.equals(IMEIReceived, IMEIExpected)) {  //Es el IMEI esperado?
-            this.con = con;  //si es IMEI
-            con.addListener(this);
-            //Send 0x01 to the device
-            byte[] accept = new byte[]{0x01};
-            con.sendMessage(accept);         //Envio accept al equipo si es el IMEI
-        } else {
-            byte[] deny = new byte[]{0x00};
-            con.sendMessage(deny);         //envio deny al equipo si no es el IMEI
-        }*/
-
     }
+
+public CodecReport sendMessage(byte[] toSend){
+    answer = null;
+    con.sendMessage(toSend);
+    
+    if(answer == null){
+    
+    synchronized(SYNC){
+        try {
+            SYNC.wait(timeout);
+        } catch (InterruptedException ex) {}
+    
+    }
+    }
+    return answer;
+
+
+    
+}
+
+
 
 }
