@@ -153,7 +153,7 @@ public class Parser {
     public static CodecReport codec12Parser_getgps(byte[] codec12Data) {
         //GPS:1 Sat:13 Lat:10.494710 Long:-66.831467 Alt:872 Speed:0 Dir:356 Date: 2020/3/13 Time: 13:37:15
         CodecReport answer = new CodecReport();
-
+  //
         String toDecode = new String(codec12Data);
 
         Map<String, String> values = new HashMap();
