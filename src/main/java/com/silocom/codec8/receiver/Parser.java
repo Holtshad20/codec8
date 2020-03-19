@@ -56,14 +56,10 @@ public class Parser {
             }
 
             int satInUse = message[index] & 0xFF;
-
             index++;
 
-            byte[] speed = new byte[2];
-            for (int i = 0; i < speed.length; i++) {
-                speed[i] = message[index];
-                index++;
-            }
+            int speed = message[index] & 0xFF;
+            index++;
 
             byte[] nOfTotalIO = new byte[1];
             nOfTotalIO[0] = message[index];
@@ -139,53 +135,84 @@ public class Parser {
 
     }
 
-    public static byte[] codec12Parser_getinfo(byte[] codec12Data) {
+    public static CodecReport codec12Parser_getinfo(byte[] codec12Data) {
         // 0123456789 11 13 15
         //"RTC:2020/3/11 20:30 Init:2020/3/11 17:33 UpTime:10582s PWR:SoftReset RST:0 GPS:3 SAT:7 TTFF:25 TTLF:1 NOGPS:0:0 SR:66 FG:0 FL:34 SMS:0 REC:886 MD:0 DB:0";
-        String toDecode = new String(codec12Data);
-        String rtcMatch = new String();
-        String satMatch = new String();
-
-        Pattern rtcPattern = Pattern.compile("RTC:(?:(?!RTC|Init).)*");
-        Matcher rtcMatcher = rtcPattern.matcher(toDecode);
-
-        Pattern satPattern = Pattern.compile("SAT:(?:(?!SAT|TTFF).)*");
-        Matcher satMatcher = satPattern.matcher(toDecode);
-
-        while (rtcMatcher.find() && satMatcher.find()) {
-            rtcMatch = rtcMatcher.group();
-            satMatch = satMatcher.group();
-        }
-
-        String rtcValue = rtcMatch.replaceAll("[/: ]+", " ");
-        String satValue = satMatch.replaceAll("[/: ]+", " ");
-
-        /*byte[] byteValue = rtcValue.getBytes();
-
-        byte[] valueTosend = new byte[byteValue.length];
-        System.arraycopy(byteValue, 3, valueTosend, 0, valueTosend.length - 3);  //fecha y hora  RTC sin espacios, "RTC"*/
+       
         return null;
 
     }
 
-    public static void codec12Parser_getstatus(byte[] codec12Data) {
+    public static CodecReport codec12Parser_getstatus(byte[] codec12Data) {
+        return null;
         //Data Link: 1 GPRS: 1 Phone: 0 SIM: 0 OP: 73402 Signal: 5 NewSMS: 0 Roaming: 0 SMSFull: 0 LAC: 1305 Cell ID: 10171 NetType: 1 FwUpd:0
 
-        String toDecode = new String(codec12Data);
-        String signalMatch = new String();
-        Pattern signalPattern = Pattern.compile("Signal:(?:(?!Signal|NewSMS).)*");  //Pattern
-        Matcher signalMatcher = signalPattern.matcher(toDecode);
-
-        while (signalMatcher.find()) {
-            signalMatch = signalMatcher.group();
-        }
-
-        String signalValue = signalMatch.replaceAll("[/: ]+", " ");
 
     }
 
     public static CodecReport codec12Parser_getgps(byte[] codec12Data) {
         //GPS:1 Sat:13 Lat:10.494710 Long:-66.831467 Alt:872 Speed:0 Dir:356 Date: 2020/3/13 Time: 13:37:15
+        CodecReport answer = new CodecReport();
+
+        String toDecode = new String(codec12Data);
+
+        Map<String, String> values = new HashMap();
+
+        String patternStr = "[1-9]{3}"; //falta patron
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(toDecode);
+
+        while (matcher.find()) {
+            int index2 = matcher.start();
+            String[] val = toDecode.substring(0, index2).split(":");
+            values.put(val[0], val[1]);
+            toDecode = toDecode.substring(index2 + 1);
+            matcher = pattern.matcher(toDecode);
+        }
+        int index = toDecode.indexOf(":");
+
+        values.put(toDecode.substring(0, index), toDecode.substring(index + 1));
+
+        for (String key : values.keySet()) {
+            switch (key) {
+                case "Sat":
+
+                    answer.setSatInUse(Integer.parseInt(values.get(key)));
+
+                    break;
+
+                case "Lat":
+
+                    answer.setLatitude(Integer.parseInt(values.get(key)));
+
+                    break;
+
+                case "Long":
+
+                    answer.setLongitude(Integer.parseInt(values.get(key)));
+
+                    break;
+
+                case "Speed":
+
+                    answer.setSpeed(Integer.parseInt(values.get(key)));
+
+                    break;
+
+                case "Date":
+
+                    //       answer.setDate(values.get(key));
+                    break;
+
+            }
+        }
+
+        return answer;
+
+    }
+
+    public static CodecReport codec12Parser_getio(byte[] codec12Data) {
+        //DI1:0 AIN1:174 DO1:0
         CodecReport answer = new CodecReport();
 
         String toDecode = new String(codec12Data);
@@ -222,16 +249,40 @@ public class Parser {
 
     }
 
-    public static CodecReport codec12Parser_getio(byte[] codec12Data) {
-        //DI1:0 AIN1:174 DO1:0
-        CodecReport answer = new CodecReport();
-        return answer;
-
-    }
-
     public static CodecReport codec12Parser_battery(byte[] codec12Data) {
         //BatState: 1 FSMState: ACTIVE ChargerIC: DONE ExtV: 11859 BatV: 4115 BatI: 0
         CodecReport answer = new CodecReport();
+
+        String toDecode = new String(codec12Data);
+
+        Map<String, String> values = new HashMap();
+
+        String patternStr = "[1-9]{3}"; //falta patron
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(toDecode);
+
+        while (matcher.find()) {
+            int index2 = matcher.start();
+            String[] val = toDecode.substring(0, index2).split(":");
+            values.put(val[0], val[1]);
+            toDecode = toDecode.substring(index2 + 1);
+            matcher = pattern.matcher(toDecode);
+        }
+        int index = toDecode.indexOf(":");
+
+        values.put(toDecode.substring(0, index), toDecode.substring(index + 1));
+
+        for (String key : values.keySet()) {
+            switch (key) {
+                case "Sat":
+
+                    answer.setSatInUse(Integer.parseInt(values.get(key)));
+
+                    break;
+
+            }
+        }
+
         return answer;
     }
 

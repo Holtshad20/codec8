@@ -6,9 +6,7 @@ package com.silocom.codec8.receiver;
 import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.lang3.ArrayUtils;
+
 
 /**
  *
@@ -137,7 +135,6 @@ public class Receiver implements MessageListener {
                     switch (decoded) {
                         case "GPS": //mensaje de getgps    0x475053
                             synchronized (SYNC) {
-
                                 answer = Parser.codec12Parser_getgps(codec12Data);
                                 SYNC.notifyAll();
                             }

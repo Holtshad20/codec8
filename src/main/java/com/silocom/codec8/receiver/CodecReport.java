@@ -18,14 +18,14 @@ class CodecReport {
     private double latitude;
     private double longitude;
     private int satInUse;
-    private byte[] speed;
+    private int speed;
     private List<IOvalue> ioValues = new ArrayList();
 
     public CodecReport() {
 
     }
 
-    public CodecReport(Date date, byte[] priority, double latitude, double longitude, int satInUse, byte[] speed) {
+    public CodecReport(Date date, byte[] priority, double latitude, double longitude, int satInUse, int speed) {
         this.date = date;
         this.priority = priority;
         this.latitude = latitude;
@@ -55,7 +55,7 @@ class CodecReport {
         return satInUse;
     }
 
-    public byte[] getSpeed() {    //hacer public los getters y setter
+    public int getSpeed() {    //hacer public los getters y setter
         return speed;
     }
 
@@ -79,7 +79,7 @@ class CodecReport {
         this.satInUse = satInUse;
     }
 
-    public void setSpeed(byte[] speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 
