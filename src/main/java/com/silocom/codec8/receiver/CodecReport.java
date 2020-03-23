@@ -35,7 +35,7 @@ class CodecReport {
 
     }
 
-    public Date getDate(Date date) {
+    public Date getDate() {
         return date;
     }
 
@@ -89,8 +89,16 @@ class CodecReport {
 
     }
 
+    public List<IOvalue> getIoValues() {
+        return ioValues;
+    }
+   
     public static class IOvalue {
-
+        public static final byte IGNITION = (byte) 239;
+        public static final byte EXTERNAL_VOLTAGE = (byte) 66;
+        public static final byte BATTERY_VOLTAGE = (byte) 67;
+        
+        
         public void setId(byte id) {
             this.id = id;
         }

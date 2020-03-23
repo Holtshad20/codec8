@@ -3,11 +3,6 @@
  */
 package com.silocom.codec8.receiver;
 
-import com.silocom.codec8.receiver.Utils;
-import com.silocom.m2m.layer.physical.Connection;
-import com.silocom.m2m.layer.physical.MessageListener;
-import java.util.Scanner;
-
 /**
  *
  * @author silocom01
@@ -15,6 +10,7 @@ import java.util.Scanner;
 public class Sender {
 
     Receiver rec;
+    private int retry;
 
     private final static String GETINFO = "000000000000000F0C010500000007676574696E666F0100004312";   //Todos los mensajes de comando estan creados ya
     private final static String GETVER = "000000000000000E0C010500000006676574766572010000A4C2";
@@ -25,43 +21,23 @@ public class Sender {
     private final static String SETDIGOUT1 = "00000000000000130C01050000000B7365746469676f7574203101000087A2";
     private final static String SETDIGOUT0 = "00000000000000130C01050000000B7365746469676f7574203001000017A3";
 
+    public Sender(Receiver rec, int retry) {
+        this.rec = rec;
+        this.retry = retry;
+    }
+
     public void commands(String command) {
 
         switch (command) {
 
-            case "getinfo":   //Device runtime system information
-
-                byte[] getinfo = GETINFO.getBytes();
-               CodecReport report = rec.sendMessage(getinfo);
-              
-                if (report == null) {
-                    
-                    //TODO
-                }else{}
-                break;
-
-            case "getver":  //Returns code version, device IMEI, modem app version, RTC time, Init time, Uptime and BT MAC address.
-
-                byte[] getver = GETVER.getBytes();
-                rec.sendMessage(getver);
-
-                break;
-
-            case "getstatus": //Modem Status information
-
-                byte[] getstatus = GETSTATUS.getBytes();
-                //    rec.getCon().sendMessage(getstatus);
-
-                break;
-
             case "getgps":  //	Current GPS data, date and time
 
                 byte[] getgps = GETGPS.getBytes();
-                //     rec.getCon().sendMessage(getgps);
+                rec.sendMessage(getgps);
 
                 break;
 
-            case "getio":  //Readout analog input,digital input and output
+            case "getIO":  //Readout analog input,digital input and output
 
                 byte[] getio = GETIO.getBytes();
                 rec.sendMessage(getio);
@@ -90,6 +66,80 @@ public class Sender {
                 break;
 
         }
+    }
+
+    public CodecReport getGPS() {
+
+        byte[] getGPS = GETGPS.getBytes();
+        CodecReport report = rec.sendMessage(getGPS);
+
+        for (int i = 0; report == null && i < retry; i++) {
+            report = rec.sendMessage(getGPS);
+        }
+        return report;
+    }
+
+    public boolean setOutput(boolean value) {
+
+        if (value) {
+            rec.sendMessage(SETDIGOUT1.getBytes());
+        } else {
+            rec.sendMessage(SETDIGOUT0.getBytes());
+        }
+
+        return true;
+    }
+
+    public CodecReport getReport() {
+
+        CodecReport answer = new CodecReport();
+
+        CodecReport report = getGPS();
+
+        if (report != null) {
+            answer.setLatitude(report.getLatitude());
+            answer.setLongitude(report.getLongitude());
+            answer.setSatInUse(report.getSatInUse());
+            answer.setSpeed(report.getSpeed());
+            answer.setDate(report.getDate());
+
+            report = getIO();
+            if (report != null) {
+
+                for (CodecReport.IOvalue value : report.getIoValues()) {
+                    answer.addIOvalue(value);
+                }
+
+                report = getBattery();
+                if (report != null) {
+                    for (CodecReport.IOvalue value : report.getIoValues()) {
+                        answer.addIOvalue(value);
+                    }
+                }
+            }
+        }
+
+        return report;
+    }
+
+    private CodecReport getIO() {
+        byte[] getIO = GETIO.getBytes();
+        CodecReport report = rec.sendMessage(getIO);
+
+        for (int i = 0; report == null && i < retry; i++) {
+            report = rec.sendMessage(getIO);
+        }
+        return report;
+    }
+
+    private CodecReport getBattery() {
+        byte[] getBattery = BATTERY.getBytes();
+        CodecReport report = rec.sendMessage(getBattery);
+
+        for (int i = 0; report == null && i < retry; i++) {
+            report = rec.sendMessage(getBattery);
+        }
+        return report;
     }
 
 }

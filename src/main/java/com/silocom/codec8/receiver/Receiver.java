@@ -7,7 +7,6 @@ import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
 import java.util.Arrays;
 
-
 /**
  *
  * @author silocom01
@@ -152,7 +151,7 @@ public class Receiver implements MessageListener {
                                 answer = Parser.codec12Parser_battery(codec12Data);
                                 SYNC.notifyAll();
                             }
-                            
+
                             break;
                     }
 
@@ -185,25 +184,18 @@ public class Receiver implements MessageListener {
         }
     }
 
-public CodecReport sendMessage(byte[] toSend){
-    answer = null;
-    con.sendMessage(toSend);
-    
-    if(answer == null){
-    
-    synchronized(SYNC){
-        try {
-            SYNC.wait(timeout);
-        } catch (InterruptedException ex) {}
-    
+    public CodecReport sendMessage(byte[] toSend) {
+        answer = null;
+        con.sendMessage(toSend);
+
+        if (answer == null) {
+
+            synchronized (SYNC) {
+                try {
+                    SYNC.wait(timeout);
+                } catch (InterruptedException ex) {}
+            }
+        }
+        return answer;
     }
-    }
-    return answer;
-
-
-    
-}
-
-
-
 }

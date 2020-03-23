@@ -4,6 +4,7 @@
 package com.silocom.codec8.receiver;
 
 import com.silocom.codec8.receiver.CodecReport.IOvalue;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -138,7 +139,7 @@ public class Parser {
     public static CodecReport codec12Parser_getinfo(byte[] codec12Data) {
         // 0123456789 11 13 15
         //"RTC:2020/3/11 20:30 Init:2020/3/11 17:33 UpTime:10582s PWR:SoftReset RST:0 GPS:3 SAT:7 TTFF:25 TTLF:1 NOGPS:0:0 SR:66 FG:0 FL:34 SMS:0 REC:886 MD:0 DB:0";
-       
+
         return null;
 
     }
@@ -147,18 +148,17 @@ public class Parser {
         return null;
         //Data Link: 1 GPRS: 1 Phone: 0 SIM: 0 OP: 73402 Signal: 5 NewSMS: 0 Roaming: 0 SMSFull: 0 LAC: 1305 Cell ID: 10171 NetType: 1 FwUpd:0
 
-
     }
 
     public static CodecReport codec12Parser_getgps(byte[] codec12Data) {
         //GPS:1 Sat:13 Lat:10.494710 Long:-66.831467 Alt:872 Speed:0 Dir:356 Date: 2020/3/13 Time: 13:37:15
         CodecReport answer = new CodecReport();
-  //
+
         String toDecode = new String(codec12Data);
 
         Map<String, String> values = new HashMap();
 
-        String patternStr = "[1-9]{3}"; //falta patron
+        String patternStr = "\\s[aA-zZ]{3,}[':']"; //falta patron
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(toDecode);
 
@@ -172,6 +172,7 @@ public class Parser {
         int index = toDecode.indexOf(":");
 
         values.put(toDecode.substring(0, index), toDecode.substring(index + 1));
+        String dateString = "";
 
         for (String key : values.keySet()) {
             switch (key) {
@@ -201,12 +202,30 @@ public class Parser {
 
                 case "Date":
 
-                    //       answer.setDate(values.get(key));
+                    dateString = values.get(key) + dateString;
+
                     break;
+                case "Time":
 
+                    dateString = dateString + values.get(key);
+
+                    break;
             }
+            
+            
+        }  
+        
+       try{
+        if (!dateString.isEmpty()){
+        
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date date = format.parse(dateString);
+            
+            answer.setDate(date);
         }
-
+       } catch(Exception e){
+       e.printStackTrace();
+       }
         return answer;
 
     }
@@ -219,7 +238,7 @@ public class Parser {
 
         Map<String, String> values = new HashMap();
 
-        String patternStr = "[1-9]{3}"; //falta patron
+        String patternStr = "\\s[aA-zZ]{3,}[':']"; //falta patron
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(toDecode);
 
@@ -236,9 +255,19 @@ public class Parser {
 
         for (String key : values.keySet()) {
             switch (key) {
-                case "Sat":
+                case "DI1":
 
-                    answer.setSatInUse(Integer.parseInt(values.get(key)));
+                    //TODO
+
+                    break;
+                case "AIN1":
+
+                   //TODO
+
+                    break;
+                case "DO1":
+
+                   //TODO 
 
                     break;
 
@@ -257,7 +286,7 @@ public class Parser {
 
         Map<String, String> values = new HashMap();
 
-        String patternStr = "[1-9]{3}"; //falta patron
+        String patternStr = "\\s[aA-zZ]{3,}[':']"; //falta patron
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(toDecode);
 
@@ -274,11 +303,27 @@ public class Parser {
 
         for (String key : values.keySet()) {
             switch (key) {
-                case "Sat":
+                case "ExtV": {
+                    int val = Integer.parseInt(values.get(key));
+                    byte[] value = new byte[4];
+                    value[0] = (byte) (val & 0xFF);
+                    value[1] = (byte) ((val >> 8) & 0xFF);
+                    value[2] = (byte) ((val >> 16) & 0xFF);
+                    value[3] = (byte) ((val >> 24) & 0xFF);
+                    answer.addIOvalue(new IOvalue(IOvalue.EXTERNAL_VOLTAGE, value));
+                }
+                break;
 
-                    answer.setSatInUse(Integer.parseInt(values.get(key)));
-
-                    break;
+                case "BatV": {
+                    int val = Integer.parseInt(values.get(key));
+                    byte[] value = new byte[4];
+                    value[0] = (byte) (val & 0xFF);
+                    value[1] = (byte) ((val >> 8) & 0xFF);
+                    value[2] = (byte) ((val >> 16) & 0xFF);
+                    value[3] = (byte) ((val >> 24) & 0xFF);
+                    answer.addIOvalue(new IOvalue(IOvalue.BATTERY_VOLTAGE, value));
+                }
+                break;
 
             }
         }
