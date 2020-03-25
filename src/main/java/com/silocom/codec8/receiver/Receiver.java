@@ -16,13 +16,13 @@ public class Receiver implements MessageListener {
     Connection con;
     private final byte[] imeiExpected;
     private final int imeiLength = 17;
-    int timeout;
+    long timeout;
 
     private final Object SYNC = new Object();
 
     private CodecReport answer;
 
-    public Receiver(Connection con, byte[] imeiExpected, int timeout) {
+    public Receiver(Connection con, byte[] imeiExpected, long timeout) {
         this.con = con;
         this.imeiExpected = imeiExpected;
         this.timeout = timeout;
@@ -63,8 +63,9 @@ public class Receiver implements MessageListener {
                     byte[] CRC16Codec8_Calculated = new byte[4];
                     CRC16Codec8_Calculated[0] = 0x00;
                     CRC16Codec8_Calculated[1] = 0x00;
-                    CRC16Codec8_Calculated[2] = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4))[0];
-                    CRC16Codec8_Calculated[3] = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4))[1];
+                    byte[] crc = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4));
+                    CRC16Codec8_Calculated[2] = crc[0];
+                    CRC16Codec8_Calculated[3] = crc[1];
                     System.out.println(" CRC16 " + Utils.hexToString(CRC16Codec8_Calculated));
                     System.out.println(" CRC16 calculated " + Utils.hexToString(CRC16Codec8_Calculated));
 
@@ -73,6 +74,7 @@ public class Receiver implements MessageListener {
                     try {
                         Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
                     } catch (Exception e) {
+                        System.err.println("error " + Utils.hexToString(AVLData));
                         e.printStackTrace();
                     }
                     byte[] NofData1 = new byte[4];
@@ -193,7 +195,8 @@ public class Receiver implements MessageListener {
             synchronized (SYNC) {
                 try {
                     SYNC.wait(timeout);
-                } catch (InterruptedException ex) {}
+                } catch (InterruptedException ex) {
+                }
             }
         }
         return answer;

@@ -11,6 +11,15 @@ import java.util.Date;
  */
 public class Utils {
 
+    public static String byteToString(byte[] message){
+        long value = 0;
+        
+        for(byte msg : message){
+        value = (value <<8) | (msg & 0xFF);
+        }
+        return Long.toString(value);
+    }
+    
     public static String hexToString(byte[] message) {
         StringBuilder answer = new StringBuilder();
         for (int i = 0; i < message.length; i++) {
@@ -49,13 +58,13 @@ public class Utils {
 
     public static double longitude(byte[] lon) {
 
-        return (int) Long.parseLong(Utils.bytesToHex(lon), 16) / 1e7;
+        return (int) Long.parseLong(Utils.bytesToHex(lon), 16);
 
     }
 
     public static double latitude(byte[] lat) {
 
-        return (int) Long.parseLong(Utils.bytesToHex(lat), 16) / 1e7;
+        return (int) Long.parseLong(Utils.bytesToHex(lat), 16);
     }
 
 }

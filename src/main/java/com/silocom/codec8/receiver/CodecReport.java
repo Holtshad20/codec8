@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author silocom01
  */
-class CodecReport {
+public class CodecReport {
 
     private Date date;
     private byte[] priority;
@@ -91,6 +91,11 @@ class CodecReport {
 
     public List<IOvalue> getIoValues() {
         return ioValues;  //
+    }
+
+    @Override
+    public String toString() {
+        return "CodecReport{" + "date=" + date + ", priority=" + priority + ", latitude=" + latitude + ", longitude=" + longitude + ", satInUse=" + satInUse + ", speed=" + speed + ", ioValues=" + ioValues + '}';
     }
    
     public static class IOvalue {

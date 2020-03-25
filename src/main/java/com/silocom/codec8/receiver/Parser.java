@@ -25,7 +25,7 @@ public class Parser {
         while (index < (message.length - 25)) {
 
             byte[] timestamp = new byte[8];
-            for (int i = 0; (i < timestamp.length); i++) {
+            for (int i = 0; i < timestamp.length; i++) {
                 timestamp[i] = message[index];
                 index++;
             }
@@ -56,18 +56,24 @@ public class Parser {
                 index++;
             }
 
+            int Angle = ((message[index] & 0xFF) << 8) | (message[index + 1] & 0xFF);
+            index += 2;
+
+            //calc Angle
             int satInUse = message[index] & 0xFF;
             index++;
 
-            int speed = message[index] & 0xFF;
+            int speed = ((message[index] & 0xFF) << 8) | (message[index + 1] & 0xFF);
+            index += 2;
+            
+            byte code = message[index];
             index++;
-
-            byte[] nOfTotalIO = new byte[1];
-            nOfTotalIO[0] = message[index];
+            
+            byte nOfTotalIO = message[index];
             index++;
 
             // Falta implementar las entradas y salidas
-            CodecReport report = new CodecReport(); //Tienes que crear la clase
+            CodecReport report = new CodecReport();
             report.setDate(date);
             report.setPriority(priority);
             report.setLatitude(latitude);
@@ -211,21 +217,20 @@ public class Parser {
 
                     break;
             }
-            
-            
-        }  
-        
-       try{
-        if (!dateString.isEmpty()){
-        
-            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date date = format.parse(dateString);
-            
-            answer.setDate(date);
+
         }
-       } catch(Exception e){
-       e.printStackTrace();
-       }
+
+        try {
+            if (!dateString.isEmpty()) {
+
+                SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = format.parse(dateString);
+
+                answer.setDate(date);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return answer;
 
     }
@@ -258,17 +263,14 @@ public class Parser {
                 case "DI1":
 
                     //TODO
-
                     break;
                 case "AIN1":
 
-                   //TODO
-
+                    //TODO
                     break;
                 case "DO1":
 
-                   //TODO 
-
+                    //TODO 
                     break;
 
             }
