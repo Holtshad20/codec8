@@ -78,8 +78,10 @@ public class Parser {
             report.setPriority(priority);
             report.setLatitude(latitude);
             report.setLongitude(longitude);
+            report.setAngle(Angle);
             report.setSatInUse(satInUse);
             report.setSpeed(speed);
+            report.setCode(code);
 
             int noByte1 = message[index] & 0xFF;
             index++;

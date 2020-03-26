@@ -19,20 +19,36 @@ public class CodecReport {
     private double longitude;
     private int satInUse;
     private int speed;
+    private int angle;
+    private int code;
+    
     private List<IOvalue> ioValues = new ArrayList();
+    
 
     public CodecReport() {
 
     }
 
-    public CodecReport(Date date, byte[] priority, double latitude, double longitude, int satInUse, int speed) {
+    public CodecReport(Date date, byte[] priority, double latitude, double longitude, int satInUse, int speed, 
+            int angle, int code) {
+        
         this.date = date;
         this.priority = priority;
         this.latitude = latitude;
         this.longitude = longitude;
         this.satInUse = satInUse;
         this.speed = speed;
+        this.angle = angle;
+        this.code = code;
 
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public int getAngle() {
+        return angle;
     }
 
     public Date getDate() {
@@ -57,6 +73,15 @@ public class CodecReport {
 
     public int getSpeed() {    //hacer public los getters y setter
         return speed;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    
+    public void setAngle(int angle) {
+        this.angle = angle;
     }
 
     public void setDate(Date date) {
