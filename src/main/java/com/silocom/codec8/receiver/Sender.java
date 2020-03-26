@@ -33,6 +33,7 @@ public class Sender {
             case "getgps":  //	Current GPS data, date and time
 
                 byte[] getgps = GETGPS.getBytes();
+                
                 rec.sendMessage(getgps);
 
                 break;
@@ -70,7 +71,7 @@ public class Sender {
 
     public CodecReport getGPS() {
 
-        byte[] getGPS = GETGPS.getBytes();
+        byte[] getGPS = Utils.stringToHex(GETGPS);
         CodecReport report = rec.sendMessage(getGPS);
 
         for (int i = 0; report == null && i < retry; i++) {
@@ -82,9 +83,9 @@ public class Sender {
     public boolean setOutput(boolean value) {
 
         if (value) {
-            rec.sendMessage(SETDIGOUT1.getBytes());
+            rec.sendMessage(Utils.stringToHex(SETDIGOUT1));
         } else {
-            rec.sendMessage(SETDIGOUT0.getBytes());
+            rec.sendMessage(Utils.stringToHex(SETDIGOUT0));
         }
 
         return true;
@@ -123,7 +124,7 @@ public class Sender {
     }
 
     private CodecReport getIO() {
-        byte[] getIO = GETIO.getBytes();
+        byte[] getIO = Utils.stringToHex(GETIO);
         CodecReport report = rec.sendMessage(getIO);
 
         for (int i = 0; report == null && i < retry; i++) {
@@ -133,7 +134,7 @@ public class Sender {
     }
 
     private CodecReport getBattery() {
-        byte[] getBattery = BATTERY.getBytes();
+        byte[] getBattery = Utils.stringToHex(BATTERY);
         CodecReport report = rec.sendMessage(getBattery);
 
         for (int i = 0; report == null && i < retry; i++) {

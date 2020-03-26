@@ -43,14 +43,15 @@ public class Receiver implements MessageListener {
             System.arraycopy(message, 2, imeiReceived, 0, imeiReceived.length);
 
             if (Arrays.equals(imeiReceived, imeiExpected)) {
-
+                System.out.println("IMEI equals");
                 byte[] accept = new byte[]{0x01};   //acepta el IMEI
                 con.sendMessage(accept);
             }
 
         } else if (message.length > 9) {
-
+            System.out.println("message " + Utils.hexToString(message));
             int messageType = message[8] & 0xFF;  //en el byte 8 del mensaje que no es IMEI, se encuentra el tipo de protocolo utilizado
+            System.out.println("mtype " + messageType);
             switch (messageType) {
 
                 case codec8:
@@ -127,12 +128,12 @@ public class Receiver implements MessageListener {
 
                     toDecode[0] = message[15];  //Primera letra del comando
                     toDecode[1] = message[16];  //...
-                    toDecode[3] = message[17];  //...
-
+                    toDecode[2] = message[17];  //...
+           
                     String decoded = new String(toDecode);
                     /* verificar las tres primeras letras de cada mensaje para saber 
                                                              que tipo de comando es, se tomo un arreglo de 3 bytes para hacerlo estandar*/
-
+          System.out.println("decoded " + decoded);
                     switch (decoded) {
                         case "GPS": //mensaje de getgps    0x475053
                             synchronized (SYNC) {
@@ -188,6 +189,7 @@ public class Receiver implements MessageListener {
 
     public CodecReport sendMessage(byte[] toSend) {
         answer = null;
+        System.out.println("tosend " + Utils.byteToString(toSend));
         con.sendMessage(toSend);
 
         if (answer == null) {

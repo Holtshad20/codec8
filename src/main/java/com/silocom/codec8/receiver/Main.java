@@ -4,6 +4,8 @@
 package com.silocom.codec8.receiver;
 
 import com.silocom.m2m.layer.physical.PhysicalLayer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,5 +22,28 @@ public class Main {
 
         con.addListener(rec);
 
+        while (!con.isConnected()) {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
+        }
+        Sender sender = new Sender(rec, 3);
+       while(true){
+       try{
+           System.out.println("Lectura " + sender.getReport().toString());
+       }catch(Exception e){
+       e.printStackTrace();
+       }
+       
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+       } 
+        
+    
     }
 }

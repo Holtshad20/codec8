@@ -153,6 +153,11 @@ public class CodecReport {
             this.value = value;
         }
 
+        @Override
+        public String toString() {
+            return "IOvalue{" + "id=" + id + ", value=" + value + '}';
+        }
+
     }
 
 }

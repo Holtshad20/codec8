@@ -3,7 +3,9 @@
  */
 package com.silocom.codec8.receiver;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -11,15 +13,15 @@ import java.util.Date;
  */
 public class Utils {
 
-    public static String byteToString(byte[] message){
+    public static String byteToString(byte[] message) {
         long value = 0;
-        
-        for(byte msg : message){
-        value = (value <<8) | (msg & 0xFF);
+
+        for (byte msg : message) {
+            value = (value << 8) | (msg & 0xFF);
         }
         return Long.toString(value);
     }
-    
+
     public static String hexToString(byte[] message) {
         StringBuilder answer = new StringBuilder();
         for (int i = 0; i < message.length; i++) {
@@ -42,6 +44,19 @@ public class Utils {
         }
         return sb.toString();
 
+    }
+
+    public static byte[] stringToHex(String message) {
+
+        if (message.length() % 2 == 0) {
+            byte[] msg = new byte[message.length() / 2];
+            for (int i = 0; i < message.length() / 2; i++) {
+                msg[i] = (byte)(Integer.parseInt(message.substring(i * 2, (i * 2) + 2), 16));
+            }
+            return msg;
+        }
+
+        return null;
     }
 
     public static Date timeCalc(byte[] timeStamp) {
