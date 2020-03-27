@@ -192,13 +192,13 @@ public class Parser {
 
                 case "Lat":
 
-                    answer.setLatitude(Integer.parseInt(values.get(key)));
+                    answer.setLatitude(Double.parseDouble(values.get(key)));
 
                     break;
 
                 case "Long":
 
-                    answer.setLongitude(Integer.parseInt(values.get(key)));
+                    answer.setLongitude(Double.parseDouble(values.get(key)));
 
                     break;
 

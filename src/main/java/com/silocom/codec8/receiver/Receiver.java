@@ -90,7 +90,7 @@ public class Receiver implements MessageListener {
                     NofData2[2] = 0x00;
                     NofData2[3] = message[message.length - 5];
 
-                    System.out.println(" NofData1: " + Integer.parseInt(Utils.hexToString(NofData1), 16));
+                    System.out.println(" NofData1: " + Utils.hexToString(NofData1));
                     System.out.println(" NofData2: " + Integer.parseInt(Utils.hexToString(NofData2), 16));
 
                     con.sendMessage(NofData1);
@@ -137,7 +137,8 @@ public class Receiver implements MessageListener {
                     switch (decoded) {
                         case "GPS": //mensaje de getgps    0x475053
                             synchronized (SYNC) {
-                                answer = Parser.codec12Parser_getgps(codec12Data);
+                                
+                                answer = Parser.codec12Parser_getgps(codec12Data);                     
                                 SYNC.notifyAll();
                             }
                             break;
@@ -189,7 +190,7 @@ public class Receiver implements MessageListener {
 
     public CodecReport sendMessage(byte[] toSend) {
         answer = null;
-        System.out.println("tosend " + Utils.byteToString(toSend));
+
         con.sendMessage(toSend);
 
         if (answer == null) {
