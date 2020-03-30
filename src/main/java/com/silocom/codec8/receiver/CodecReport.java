@@ -146,10 +146,10 @@ public class CodecReport {
         return ioValues;  //
     }
 
-    @Override
+  /*  @Override
     public String toString() {
         return "CodecReport{" + "date=" + date + ", priority=" + priority + ", latitude=" + latitude + ", longitude=" + longitude + ", satInUse=" + satInUse + ", speed=" + speed + ", ioValues=" + ioValues + '}';
-    }
+    }*/
 
     public static class IOvalue {
 
@@ -184,10 +184,10 @@ public class CodecReport {
             this.value = value;
         }
 
-        @Override
+      /*  @Override
         public String toString() {
             return "IOvalue{" + "id=" + (id & 0xFF) + ", value=" + Utils.hexToString(value) + '}';
-        }
+        }*/
 
     }
 
