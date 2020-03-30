@@ -3,6 +3,9 @@
  */
 package com.silocom.codec8.receiver;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author silocom01
@@ -26,56 +29,13 @@ public class Sender {
         this.retry = retry;
     }
 
-    public void commands(String command) {
-
-        switch (command) {
-
-            case "getgps":  //	Current GPS data, date and time
-
-                byte[] getgps = GETGPS.getBytes();
-                
-                rec.sendMessage(getgps);
-
-                break;
-
-            case "getIO":  //Readout analog input,digital input and output
-
-                byte[] getio = GETIO.getBytes();
-                rec.sendMessage(getio);
-
-                break;
-
-            case "battery":  //Returns battery state info
-
-                byte[] battery = BATTERY.getBytes();  //Not sure
-                rec.sendMessage(battery);
-
-                break;
-
-            case "setdigout 1":  //Set digital output ## DOUT1 DOUT2
-
-                byte[] setdigout1 = SETDIGOUT1.getBytes();
-                rec.sendMessage(setdigout1);
-
-                break;
-
-            case "setdigout 0":
-
-                byte[] setdigout0 = SETDIGOUT0.getBytes();
-                rec.sendMessage(setdigout0);
-
-                break;
-
-        }
-    }
-
     public CodecReport getGPS() {
 
         byte[] getGPS = Utils.stringToHex(GETGPS);
-        CodecReport report = rec.sendMessage(getGPS);
+        CodecReport report = rec.sendMessage(getGPS,1);
 
         for (int i = 0; report == null && i < retry; i++) {
-            report = rec.sendMessage(getGPS);
+            report = rec.sendMessage(getGPS,1);
         }
         return report;
     }
@@ -83,9 +43,9 @@ public class Sender {
     public boolean setOutput(boolean value) {
 
         if (value) {
-            rec.sendMessage(Utils.stringToHex(SETDIGOUT1));
+            rec.sendMessage(Utils.stringToHex(SETDIGOUT1),4);
         } else {
-            rec.sendMessage(Utils.stringToHex(SETDIGOUT0));
+            rec.sendMessage(Utils.stringToHex(SETDIGOUT0),4);
         }
 
         return true;
@@ -116,29 +76,45 @@ public class Sender {
                     for (CodecReport.IOvalue value : report.getIoValues()) {
                         answer.addIOvalue(value);
                     }
+                } else {
+                    System.out.println("get battery null");
                 }
+            } else {
+                System.out.println("get io null");
             }
+        } else {
+            System.out.println("get gps null");
         }
 
-        return report;
+        return answer;
     }
 
     private CodecReport getIO() {
         byte[] getIO = Utils.stringToHex(GETIO);
-        CodecReport report = rec.sendMessage(getIO);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        CodecReport report = rec.sendMessage(getIO,2);
 
         for (int i = 0; report == null && i < retry; i++) {
-            report = rec.sendMessage(getIO);
+            report = rec.sendMessage(getIO,2);
         }
         return report;
     }
 
     private CodecReport getBattery() {
         byte[] getBattery = Utils.stringToHex(BATTERY);
-        CodecReport report = rec.sendMessage(getBattery);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        CodecReport report = rec.sendMessage(getBattery,3);
 
         for (int i = 0; report == null && i < retry; i++) {
-            report = rec.sendMessage(getBattery);
+            report = rec.sendMessage(getBattery,3);
         }
         return report;
     }

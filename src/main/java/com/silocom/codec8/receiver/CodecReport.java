@@ -21,17 +21,19 @@ public class CodecReport {
     private int speed;
     private int angle;
     private int code;
-    
+    private int do1;
+    private int ain1;
+    private int di1;
+
     private List<IOvalue> ioValues = new ArrayList();
-    
 
     public CodecReport() {
 
     }
 
-    public CodecReport(Date date, byte[] priority, double latitude, double longitude, int satInUse, int speed, 
-            int angle, int code) {
-        
+    public CodecReport(Date date, byte[] priority, double latitude, double longitude, int satInUse, int speed,
+            int angle, int code, int do1, int ain1, int di1) {
+
         this.date = date;
         this.priority = priority;
         this.latitude = latitude;
@@ -40,7 +42,22 @@ public class CodecReport {
         this.speed = speed;
         this.angle = angle;
         this.code = code;
+        this.do1 = do1;
+        this.ain1 = ain1;
+        this.di1 = di1;
 
+    }
+
+    public int getDo1() {
+        return do1;
+    }
+
+    public int getAin1() {
+        return ain1;
+    }
+
+    public int getDi1() {
+        return di1;
     }
 
     public int getCode() {
@@ -75,11 +92,22 @@ public class CodecReport {
         return speed;
     }
 
+    public void setDo1(int do1) {
+        this.do1 = do1;
+    }
+
+    public void setAin1(int ain1) {
+        this.ain1 = ain1;
+    }
+
+    public void setDi1(int di1) {
+        this.di1 = di1;
+    }
+
     public void setCode(int code) {
         this.code = code;
     }
 
-    
     public void setAngle(int angle) {
         this.angle = angle;
     }
@@ -122,13 +150,16 @@ public class CodecReport {
     public String toString() {
         return "CodecReport{" + "date=" + date + ", priority=" + priority + ", latitude=" + latitude + ", longitude=" + longitude + ", satInUse=" + satInUse + ", speed=" + speed + ", ioValues=" + ioValues + '}';
     }
-   
+
     public static class IOvalue {
+
         public static final byte IGNITION = (byte) 239;
         public static final byte EXTERNAL_VOLTAGE = (byte) 66;
         public static final byte BATTERY_VOLTAGE = (byte) 67;
-        
-        
+        public static final byte DIGITAL_INPUT_1 = (byte) 1;
+        public static final byte ANALOG_INPUT_1 = (byte) 9;
+        public static final byte DIGITAL_OUTPUT_1 = (byte) 179;
+
         public void setId(byte id) {
             this.id = id;
         }
@@ -155,7 +186,7 @@ public class CodecReport {
 
         @Override
         public String toString() {
-            return "IOvalue{" + "id=" + id + ", value=" + value + '}';
+            return "IOvalue{" + "id=" + (id & 0xFF) + ", value=" + Utils.hexToString(value) + '}';
         }
 
     }

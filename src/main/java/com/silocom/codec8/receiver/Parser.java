@@ -65,10 +65,10 @@ public class Parser {
 
             int speed = ((message[index] & 0xFF) << 8) | (message[index + 1] & 0xFF);
             index += 2;
-            
+
             byte code = message[index];
             index++;
-            
+
             byte nOfTotalIO = message[index];
             index++;
 
@@ -245,7 +245,7 @@ public class Parser {
 
         Map<String, String> values = new HashMap();
 
-        String patternStr = "\\s[aA-zZ]{3,}[':']"; //falta patron
+        String patternStr = "\\s[A-Z]{2,}[0-9][':']"; //falta patron
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(toDecode);
 
@@ -262,18 +262,32 @@ public class Parser {
 
         for (String key : values.keySet()) {
             switch (key) {
-                case "DI1":
+                case "DI1": {
+                    int val = Integer.parseInt(values.get(key).trim());
+                    byte[] value = new byte[1];
+                    value[0] = (byte) (val & 0xFF);
+                    answer.addIOvalue(new IOvalue(IOvalue.DIGITAL_INPUT_1, value));
+                }
 
-                    //TODO
-                    break;
-                case "AIN1":
+                break;
+                case "AIN1": {
+                    int val = Integer.parseInt(values.get(key).trim());
+                    byte[] value = new byte[4];
+                    value[0] = (byte) (val & 0xFF);
+                    value[1] = (byte) ((val >> 8) & 0xFF);
+                    value[2] = (byte) ((val >> 16) & 0xFF);
+                    value[3] = (byte) ((val >> 24) & 0xFF);
+                    answer.addIOvalue(new IOvalue(IOvalue.ANALOG_INPUT_1, value));
+                }
+                break;
+                case "DO1": {
+                    int val = Integer.parseInt(values.get(key).trim());
+                    byte[] value = new byte[1];
+                    value[0] = (byte) (val & 0xFF);
+                    answer.addIOvalue(new IOvalue(IOvalue.DIGITAL_OUTPUT_1, value));
+                }
 
-                    //TODO
-                    break;
-                case "DO1":
-
-                    //TODO 
-                    break;
+                break;
 
             }
         }
@@ -308,7 +322,7 @@ public class Parser {
         for (String key : values.keySet()) {
             switch (key) {
                 case "ExtV": {
-                    int val = Integer.parseInt(values.get(key));
+                    int val = Integer.parseInt(values.get(key).trim());
                     byte[] value = new byte[4];
                     value[0] = (byte) (val & 0xFF);
                     value[1] = (byte) ((val >> 8) & 0xFF);
@@ -319,7 +333,7 @@ public class Parser {
                 break;
 
                 case "BatV": {
-                    int val = Integer.parseInt(values.get(key));
+                    int val = Integer.parseInt(values.get(key).trim());
                     byte[] value = new byte[4];
                     value[0] = (byte) (val & 0xFF);
                     value[1] = (byte) ((val >> 8) & 0xFF);

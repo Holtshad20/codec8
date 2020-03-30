@@ -51,12 +51,26 @@ public class Utils {
         if (message.length() % 2 == 0) {
             byte[] msg = new byte[message.length() / 2];
             for (int i = 0; i < message.length() / 2; i++) {
-                msg[i] = (byte)(Integer.parseInt(message.substring(i * 2, (i * 2) + 2), 16));
+                msg[i] = (byte) (Integer.parseInt(message.substring(i * 2, (i * 2) + 2), 16));
             }
             return msg;
         }
 
         return null;
+    }
+
+    public static byte[] concatByteArray(byte[] a, byte[] b) {
+        byte[] c = new byte[a.length + b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+    }
+
+    public static int fromByteArray(byte[] bytes) {
+        return ((bytes[0] & 0xFF) << 24)
+                | ((bytes[1] & 0xFF) << 16)
+                | ((bytes[2] & 0xFF) << 8)
+                | ((bytes[3] & 0xFF) << 0);
     }
 
     public static Date timeCalc(byte[] timeStamp) {
