@@ -297,14 +297,14 @@ public class Parser {
     }
 
     public static CodecReport codec12Parser_battery(byte[] codec12Data) {
-        //BatState: 1 FSMState: ACTIVE ChargerIC: DONE ExtV: 11859 BatV: 4115 BatI: 0
+
         CodecReport answer = new CodecReport();
 
         String toDecode = new String(codec12Data);
 
         Map<String, String> values = new HashMap();
 
-        String patternStr = "\\s[aA-zZ]{3,}[':']"; //falta patron
+        String patternStr = "\\s[aA-zZ]{3,}[':']"; 
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(toDecode);
 
@@ -342,10 +342,8 @@ public class Parser {
                     answer.addIOvalue(new IOvalue(IOvalue.BATTERY_VOLTAGE, value));
                 }
                 break;
-
             }
         }
-
         return answer;
     }
 

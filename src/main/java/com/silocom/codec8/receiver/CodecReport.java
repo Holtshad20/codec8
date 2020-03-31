@@ -88,7 +88,7 @@ public class CodecReport {
         return satInUse;
     }
 
-    public int getSpeed() {    //hacer public los getters y setter
+    public int getSpeed() {   
         return speed;
     }
 
@@ -143,13 +143,8 @@ public class CodecReport {
     }
 
     public List<IOvalue> getIoValues() {
-        return ioValues;  //
+        return ioValues;  
     }
-
-  /*  @Override
-    public String toString() {
-        return "CodecReport{" + "date=" + date + ", priority=" + priority + ", latitude=" + latitude + ", longitude=" + longitude + ", satInUse=" + satInUse + ", speed=" + speed + ", ioValues=" + ioValues + '}';
-    }*/
 
     public static class IOvalue {
 
@@ -183,12 +178,6 @@ public class CodecReport {
             this.id = id;
             this.value = value;
         }
-
-      /*  @Override
-        public String toString() {
-            return "IOvalue{" + "id=" + (id & 0xFF) + ", value=" + Utils.hexToString(value) + '}';
-        }*/
-
     }
 
 }

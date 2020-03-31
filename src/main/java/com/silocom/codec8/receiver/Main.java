@@ -31,11 +31,11 @@ public class Main {
         }
         Sender sender = new Sender(rec, 3);
        while(true){
-       try{
+   /*    try{
            System.out.println("Lectura " + sender.getReport().toString());
        }catch(Exception e){
        e.printStackTrace();
-       }
+       }*/
        
             try {
                 Thread.sleep(10000);

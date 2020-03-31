@@ -67,9 +67,9 @@ public class Receiver implements MessageListener {
         }
     }
 
-    // @Override
+
+    @Override
     public void receiveMessage(byte[] message, Connection con) {
-        //  throw new UnsupportedOperationException("Not supported yet.");
 
         if (message.length == imeiLength) {
             byte[] imeiReceived = new byte[15];
@@ -91,7 +91,6 @@ public class Receiver implements MessageListener {
     }
 
     private boolean procMsg(byte[] message) {
-        //System.out.println("message " + Utils.hexToString(message));
 
         byte[] dfLength = new byte[4];
         dfLength[0] = message[4];
@@ -101,16 +100,14 @@ public class Receiver implements MessageListener {
 
         int dataFieldLength = ByteBuffer.wrap(dfLength).getInt();
         int messageType = message[8] & 0xFF;  //en el byte 8 del mensaje que no es IMEI, se encuentra el tipo de protocolo utilizado
-        //System.out.println("mtype " + messageType);
+
         switch (messageType) {
 
             case codec8:
 
-                //Si el numero de bytes recibidos es mejor que el tama;o del mensaje parseado return false
                 if (dataFieldLength < message.length) {
                     return false;
                 }
-                //System.out.println(" codec8 message: " + Utils.hexToString(message));
 
                 byte[] crc16Codec8Parsed = new byte[4];
                 System.arraycopy(message, message.length - 4, crc16Codec8Parsed, 0, 4);
@@ -128,9 +125,8 @@ public class Receiver implements MessageListener {
 
                 byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
 
-              
-                    Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
-             
+                Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
+
                 byte[] NofData1 = new byte[4];
                 NofData1[0] = 0x00;
                 NofData1[1] = 0x00;
@@ -143,16 +139,11 @@ public class Receiver implements MessageListener {
                 NofData2[2] = 0x00;
                 NofData2[3] = message[message.length - 5];
 
-             //   System.out.println(" NofData1: " + Utils.hexToString(NofData1));
-              //  System.out.println(" NofData2: " + Integer.parseInt(Utils.hexToString(NofData2), 16));
-
                 con.sendMessage(NofData1);
 
                 break;
 
             case codec8E:
-
-               // System.out.println(" codec8E message: " + Utils.hexToString(message));
 
                 byte[] crc16Codec8EParsed = new byte[4];
                 System.arraycopy(message, message.length - 4, crc16Codec8EParsed, 0, 4);
@@ -171,7 +162,6 @@ public class Receiver implements MessageListener {
                 break;
 
             case codec12:
-                //System.out.println(" codec12 message: " + Utils.hexToString(message));
 
                 //separar el header y demas de la data
                 byte[] codec12Data = Arrays.copyOfRange(message, 15, message.length - 5);
@@ -184,8 +174,8 @@ public class Receiver implements MessageListener {
 
                 String decoded = new String(toDecode);
                 /* verificar las tres primeras letras de cada mensaje para saber 
-                                                             que tipo de comando es, se tomo un arreglo de 3 bytes para hacerlo estandar*/
-              //  System.out.println("decoded " + decoded);
+                 que tipo de comando es, se tomo un arreglo de 3 bytes para hacerlo estandar*/
+
                 switch (decoded) {
                     case "GPS": //mensaje de getgps    0x475053
                         if (expectedMessage == 1) {
@@ -208,7 +198,7 @@ public class Receiver implements MessageListener {
                     case "DOU": {
                         if (expectedMessage == 4) {
                             synchronized (SYNC) {
-                               
+
                                 SYNC.notifyAll();
                             }
                         }
@@ -237,7 +227,6 @@ public class Receiver implements MessageListener {
         con.sendMessage(toSend);
 
         if (answer == null) {
-
             synchronized (SYNC) {
                 try {
                     SYNC.wait(timeout);
