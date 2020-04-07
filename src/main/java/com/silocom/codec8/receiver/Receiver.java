@@ -7,6 +7,7 @@ import com.silocom.m2m.layer.physical.Connection;
 import com.silocom.m2m.layer.physical.MessageListener;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -29,24 +30,30 @@ public class Receiver implements MessageListener {
 
     private CodecReport answer;
 
+    private CodecListener listener;
+
     public Receiver(Connection con, byte[] imeiExpected, long timeout) {
         this.con = con;
         this.imeiExpected = imeiExpected;
         this.timeout = timeout;
     }
 
+    public void setListener(CodecListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public void receiveMessage(byte[] message) {
-
+        // System.out.println("Message received");
         if (message.length == imeiLength) {
-            System.out.println("IMEI message: " + Utils.hexToString(message));
+            // System.out.println("IMEI message: " + Utils.hexToString(message));
 
             byte[] imeiReceived = new byte[15];
 
             System.arraycopy(message, 2, imeiReceived, 0, imeiReceived.length);
 
             if (Arrays.equals(imeiReceived, imeiExpected)) {
-                System.out.println("IMEI equals");
+                // System.out.println("IMEI equals");
                 byte[] accept = new byte[]{0x01};   //acepta el IMEI
                 con.sendMessage(accept);
             }
@@ -66,7 +73,6 @@ public class Receiver implements MessageListener {
 
         }
     }
-
 
     @Override
     public void receiveMessage(byte[] message, Connection con) {
@@ -105,28 +111,30 @@ public class Receiver implements MessageListener {
 
             case codec8:
 
-                if (dataFieldLength < message.length) {
+                if (dataFieldLength > message.length) {
+                    System.out.println("dataF minor than message length");
                     return false;
                 }
-
+                
+                System.out.println("dataF major than message length");
                 byte[] crc16Codec8Parsed = new byte[4];
                 System.arraycopy(message, message.length - 4, crc16Codec8Parsed, 0, 4);
 
-                byte[] CRC16Codec8_Calculated = new byte[4];
-                CRC16Codec8_Calculated[0] = 0x00;
-                CRC16Codec8_Calculated[1] = 0x00;
-                byte[] crc = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4));
-                CRC16Codec8_Calculated[2] = crc[0];
-                CRC16Codec8_Calculated[3] = crc[1];
+                byte[] CRC16Codec8_Calculated = CRC16.calcCRC16(Arrays.copyOfRange(message, 8, message.length - 4));
+
+                System.out.println("crc parsed " + Utils.hexToString(crc16Codec8Parsed));
+                System.out.println("crc calc " + Utils.hexToString(CRC16Codec8_Calculated));
 
                 if (!Arrays.equals(CRC16Codec8_Calculated, crc16Codec8Parsed)) {
+                    System.out.println("CRC not equal");
                     return true;
                 }
-
+                System.out.println("CRC equal");
+                System.out.println("AVL data copy of range");
                 byte[] AVLData = Arrays.copyOfRange(message, 10, message.length - 5);   //Todos los records
 
-                Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
-
+                List<CodecReport> reports = Parser.parserCodec8(AVLData); //Envio la data (puede ser 1 o mas records, maximo 255 records por paquete) a pasear al metodo parser 
+                System.out.println("report list");
                 byte[] NofData1 = new byte[4];
                 NofData1[0] = 0x00;
                 NofData1[1] = 0x00;
@@ -141,6 +149,9 @@ public class Receiver implements MessageListener {
 
                 con.sendMessage(NofData1);
 
+                if (listener != null) {
+                    listener.onData(reports);
+                }
                 break;
 
             case codec8E:

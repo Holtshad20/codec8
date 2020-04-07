@@ -192,13 +192,13 @@ public class Parser {
 
                 case "Lat":
 
-                    answer.setLatitude(Double.parseDouble(values.get(key)));
+                    answer.setLatitude(Double.parseDouble(values.get(key)) * 1e7);
 
                     break;
 
                 case "Long":
 
-                    answer.setLongitude(Double.parseDouble(values.get(key)));
+                    answer.setLongitude(Double.parseDouble(values.get(key)) * 1e7);
 
                     break;
 
@@ -304,7 +304,7 @@ public class Parser {
 
         Map<String, String> values = new HashMap();
 
-        String patternStr = "\\s[aA-zZ]{3,}[':']"; 
+        String patternStr = "\\s[aA-zZ]{3,}[':']";
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(toDecode);
 

@@ -146,6 +146,7 @@ public class CodecReport {
         return ioValues;  
     }
 
+
     public static class IOvalue {
 
         public static final byte IGNITION = (byte) 239;
@@ -180,4 +181,10 @@ public class CodecReport {
         }
     }
 
+    @Override
+    public String toString() {
+        return "CodecReport{" + "date=" + date + ", priority=" + priority + ", latitude=" + latitude + ", longitude=" + longitude + ", satInUse=" + satInUse + ", speed=" + speed + ", angle=" + angle + ", code=" + code + ", do1=" + do1 + ", ain1=" + ain1 + ", di1=" + di1 + ", ioValues=" + ioValues + '}';
+    }
+
+    
 }
